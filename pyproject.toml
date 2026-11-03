@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "patex-pypsa"
+version = "0.1.0"
+description = "Turn PatEx scenario outputs into PyPSA-Eur demand inputs"
+readme = "README.md"
+# Installable both in the PatEx env (Python 3.11, pandas 2.2) and in the
+# PyPSA-Eur pixi env (pandas 3): pandas is the only dependency on purpose.
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+# only to rebuild data/agriculture_use_shares.csv from JRC-IDEES
+idees = ["openpyxl>=3.1"]
+
+[project.scripts]
+patex-pypsa = "patex_pypsa.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["patex_pypsa*"]

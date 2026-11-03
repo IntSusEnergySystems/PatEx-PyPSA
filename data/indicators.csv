@@ -1,0 +1,22 @@
+page,chart,title,unit,variable,filters,by,scale,note
+energy,fe_carrier,Final energy by carrier,TWh,elc_final-energy-demand-by-carrier[TWh],,energy-carrier,1,"PatEx final energy consumption (agriculture, buildings, industry, domestic transport)."
+energy,fe_sector,Final energy by sector,TWh,elc_final-energy-demand-by-sector[TWh],,sector,1,
+energy,bunkers,International bunkers,TWh,tra_energy-demand-bunkers-by-type-carrier[TWh],,domestic-type,1,Not in final energy.
+buildings,bld_use,Buildings by end use (incl. ambient heat),TWh,bld_energy-demand[TWh],,end-use,1,Without district heat; ambient heat is the heat-pump input from the environment.
+buildings,bld_carrier,Buildings by carrier (incl. ambient heat),TWh,bld_energy-demand-by-vector[TWh],,energy-carrier,1,
+buildings,bld_dh,District heat delivered to buildings,TWh,bld_district-energy-demand[TWh],,building-type,1,Delivered heat; PatEx adds network losses in the supply module.
+transport,tra_vehicle,Domestic transport by vehicle,TWh,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],,vehicule-type,1,
+transport,tra_carrier,Domestic transport by carrier,TWh,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],,energy-carrier,1,
+transport,tra_fleet_ldv,Cars and vans by motor,million,tra_total-veh-fleet[number],vehicule-type=LDV,motor-type,1e-6,BEV + PHEV are the EV fleet passed to PyPSA-Eur.
+industry,ind_carrier,Industry by carrier (incl. feedstock),TWh,ind_energy-demand-by-carrier-feedstock[TWh],,energy-carrier,1,
+industry,ind_feedstock,Industry energy use and feedstock,TWh,ind_energy-demand-by-carrier-feedstock[TWh],,feedstock-type,1,
+industry,ind_production,Material production,Mt,ind_material-production-by-material[kt],,material,1e-3,
+industry,ind_process,Process emissions by material,MtCO2e,ind_emissions-by-material-by-type[MtCO2e],emission-type=process,material,1,Before capture. Passed to PyPSA-Eur (olefins as naphtha split).
+agriculture,agr_carrier,Agriculture by carrier,TWh,agr_energy-demand-by-vector[TWh],,energy-carrier,1,
+emissions,ghg_module,Greenhouse-gas emissions by module,MtCO2e,clm_emissions-by-em-or-capt-module-sector[MtCO2e],emissions-or-capture=emissions,module; sector,1,Land use is a sink (negative).
+emissions,ghg_total,"Emissions, CCS and embedded feedstock",MtCO2e,clm_total-emissions[MtCO2e],,emissions-or-capture,1,
+power,elc_capacity,Power capacity,GW,elc_total-capacities[MW],,way-of-production,1e-3,PatEx power sector: compared with PyPSA-Eur results; not passed.
+power,elc_production,Electricity production,TWh,elc_net-energy-production-by-carrier-primary-carrier-way-of-prod[TWh],,way-of-production,1,Not passed to PyPSA-Eur.
+power,elc_imports,Net imports,TWh,elc_elec-energy-net-imported[TWh],,energy-carrier,1,
+heat,heat_production,District heat production by fuel,TWh,elc_gross-energy-production-by-carrier-way-of-prod[TWh],energy-carrier=heat,primary-energy-carrier,1,"Heat plants and CHP, incl. network losses. Not passed to PyPSA-Eur."
+heat,heat_technology,District heat production by plant,TWh,elc_gross-energy-production-by-carrier-way-of-prod[TWh],energy-carrier=heat,way-of-production,1,

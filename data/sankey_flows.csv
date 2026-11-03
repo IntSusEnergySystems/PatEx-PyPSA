@@ -1,0 +1,34 @@
+patex_variable,filters,carrier,sector,pypsa,note
+bld_energy-demand[TWh],building-type=residential; end-use=heating|hotwater; energy-carrier!=ambiant,,Residential heating & hot water,Building heat,"Electric heating included: PyPSA-Eur serves it from its heat buses."
+bld_energy-demand[TWh],building-type=residential; end-use=heating|hotwater; energy-carrier=ambiant,,Residential heating & hot water,Ambient heat (heat-pump COP),"Not final energy: PyPSA-Eur models it through the COP."
+bld_district-energy-demand[TWh],building-type=residential,heat,Residential heating & hot water,Building heat,
+bld_energy-demand[TWh],building-type=residential; end-use!=heating|hotwater; energy-carrier=electricity,,Residential other uses,Electricity base load,"Appliances, lighting, cooling, electric cooking."
+bld_energy-demand[TWh],building-type=residential; end-use!=heating|hotwater; energy-carrier!=electricity,,Residential other uses,Not modelled in PyPSA-Eur,"Non-electric cooking: exported as total residential cooking, which PyPSA-Eur does not use."
+bld_energy-demand[TWh],building-type=non-residential; end-use=heating|hotwater; energy-carrier!=ambiant,,Services heating & hot water,Building heat,
+bld_energy-demand[TWh],building-type=non-residential; end-use=heating|hotwater; energy-carrier=ambiant,,Services heating & hot water,Ambient heat (heat-pump COP),
+bld_district-energy-demand[TWh],building-type=non-residential,heat,Services heating & hot water,Building heat,
+bld_energy-demand[TWh],building-type=non-residential; end-use!=heating|hotwater; energy-carrier=electricity,,Services other uses,Electricity base load,
+bld_energy-demand[TWh],building-type=non-residential; end-use!=heating|hotwater; energy-carrier!=electricity,,Services other uses,Not modelled in PyPSA-Eur,"Non-electric cooking (total services cooking, not used by PyPSA-Eur)."
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=electricity,,Road,Land transport EV,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=hydrogen,,Road,Land transport fuel cell,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier!=electricity|hydrogen,,Road,Land transport oil,"Gas vehicles included: no gas vehicles in PyPSA-Eur."
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=electricity,,Rail,Electricity base load,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier!=electricity,,Rail,Land transport oil,"Hydrogen rail included (T15)."
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier=electricity,,Aviation,Electricity base load,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier!=electricity,,Aviation,Aviation kerosene,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-aviation; energy-carrier=electricity,,Aviation,Electricity base load,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-aviation; energy-carrier!=electricity,,Aviation,Aviation kerosene,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier=electricity,,Navigation,Electricity base load,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier!=electricity,,Navigation,Shipping,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier=electricity,,Navigation,Electricity base load,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier!=electricity,,Navigation,Shipping,"PyPSA-Eur splits it into oil, methanol and hydrogen with its own shares (T15)."
+ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=electricity,,Industry ({feedstock-type}),Industry electricity,
+ind_energy-demand-by-carrier-feedstock[TWh],feedstock-type=excl-feedstock; energy-carrier=gaseous-ff-natural|gaseous-bio|gaseous-syn,,Industry ({feedstock-type}),Industry gas,
+ind_energy-demand-by-carrier-feedstock[TWh],feedstock-type=feedstock; energy-carrier=gaseous-ff-natural|gaseous-bio|gaseous-syn,,Industry ({feedstock-type}),Industry gas feedstock (no CO2),"Ammonia and olefins; its CO2 is in the PatEx process emissions."
+ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=hydrogen,,Industry ({feedstock-type}),Industry hydrogen,
+ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=solid-biomass,,Industry ({feedstock-type}),Industry solid biomass,
+ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=solid-ff-coal,,Industry ({feedstock-type}),Industry coal,
+ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=liquid-ff-oil|liquid-bio|liquid-syn,,Industry ({feedstock-type}),Industry naphtha,"All industry liquids, burnt and feedstock (T8)."
+ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=heat,,Industry ({feedstock-type}),Industry low-temperature heat,
+ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=solid-waste,,Industry ({feedstock-type}),Not supplied (CO2 only),"No such fuel in PyPSA-Eur: its CO2 is added to the process emissions."
+agr_energy-demand-by-vector[TWh],,,Agriculture,agriculture split,"Split into Agriculture electricity / heat / machinery with the JRC-IDEES shares (agriculture.py)."

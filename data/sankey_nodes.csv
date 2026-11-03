@@ -1,0 +1,22 @@
+pypsa,group,bundle,expression
+Building heat,heat,energy_totals,total residential space + total residential water + total services space + total services water
+Ambient heat (heat-pump COP),not passed,,
+Electricity base load,electricity,energy_totals,electricity base load
+Land transport EV,transport,energy_totals,electricity road
+Land transport fuel cell,transport,energy_totals,hydrogen road
+Land transport oil,transport,energy_totals,total road + total rail - electricity rail - electricity road - hydrogen road
+Aviation kerosene,transport,energy_totals,total domestic aviation + total international aviation
+Shipping,transport,energy_totals,total domestic navigation + total international navigation
+Industry electricity,industry,industry,electricity
+Industry gas,industry,industry,methane
+Industry gas feedstock (no CO2),industry,industry,methane feedstock
+Industry hydrogen,industry,industry,hydrogen
+Industry solid biomass,industry,industry,solid biomass
+Industry coal,industry,industry,coal + coke
+Industry naphtha,industry,industry,naphtha
+Industry low-temperature heat,industry,industry,low-temperature heat
+Agriculture electricity,agriculture,energy_totals,total agriculture electricity
+Agriculture heat,agriculture,energy_totals,total agriculture heat
+Agriculture machinery,agriculture,energy_totals,total agriculture machinery
+Not modelled in PyPSA-Eur,not passed,,
+Not supplied (CO2 only),not passed,,
