@@ -6,6 +6,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Next
 
+> Session handover (decisions waiting, implementation plans): `../private_notes/NEXT_SESSION.md`
+> (outside git). T18 and T19 below: proposal made, **wait for the user's confirmation**.
+
 - [ ] **T5 Push** (needs the user's written consent in the chat): remotes are set
   (`origin` = `IntSusEnergySystems/PatEx-PyPSA` and `IntSusEnergySystems/PyPSA-Eur-CANEU`,
   SSH key `id_ed25519` authenticates). To push: `master` and `develop` of both repos.
