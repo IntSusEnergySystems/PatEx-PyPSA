@@ -28,11 +28,21 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 - 2026-11-02 Added remote `upstream` (PyPSA/pypsa-eur), fast-forwarded `master` by 3
   upstream commits (`8d4b7d30`), created `develop`.
 
+- 2026-11-04 `config/patex/levers2-be-lu-nl.yaml`: run overlay for BE, LU, NL (levers 2
+  bundle, 10 nodes, 3h, solve memory 60 GB, Gurobi 32 threads).
+
 ## PatEx
 
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-04 — Cluster nic6 and pypsa2html
+
+- `scripts/cluster/nic6_env.sh`, `scripts/cluster/pypsa_job.sh`: environment and generic
+  Slurm job (any config files, snakemake on the job's cores and memory).
+- `scripts/pypsa2html_config.py`: pypsa2html project config for one run, country groups
+  from `n.buses.country` (any country set), network pattern `solved_{horizon}.nc`.
 
 ### 2026-11-04 — Docs cleanup
 

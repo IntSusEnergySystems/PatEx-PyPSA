@@ -35,6 +35,17 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   central heat bus (plan in the handover).
   (Figures: `../private_notes/FINDINGS.md`.)
 
+- [ ] **T20 First multi-country run on nic6 (BE, LU, NL)**: jobs 80246 (prep) → 80247
+  (solve), `config/patex/levers2-be-lu-nl.yaml` (levers 2, 10 nodes, 3h, myopic
+  2030-2050, default CO2 budget). Then: `seff`, results back, `check_network_ledger.py`
+  per country and horizon, pypsa2html report → caneurope (`pypsa_results/`).
+- [ ] **T21 pypsa2html and the current PyPSA-Eur layout** (decision with the user, library
+  not modified yet): file names hard-coded in the old layout (`*_s_{clusters}_*`,
+  `regions_onshore_base_s_*`) and the new `csvs/nodal_*.csv` format (no
+  `planning_horizon` header row) → capacity and cost pages, part of the Sankey and the
+  maps are empty; `dh_by_price` fails (NaN). Options: make those names configurable in
+  pypsa2html / support the new layout there, or a compatibility step on our side.
+
 ## Waiting for Climact / CAN
 
 - [ ] **T6 PAC 2.0 lever file** → `runs/pac2/patex/levers.json` (runs use levers = 2 so far).
@@ -57,6 +68,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Done
 
+- 2026-11-04 nic6 set up (`../../CLUSTER_NIC6.md`): pixi env on scratch, Gurobi token
+  license, `scripts/cluster/` (env, generic Slurm job), `scripts/pypsa2html_config.py`
+  (country groups from `n.buses.country`).
 - 2026-11-04 Docs cleanup (CHANGELOG); report published at the CAN Europe server
   (address in `../../CLAUDE.md`).
 
