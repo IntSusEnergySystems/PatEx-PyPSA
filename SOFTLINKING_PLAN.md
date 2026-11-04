@@ -239,6 +239,22 @@ together. PyPSA-Eur multiplies the building urban central heat demand by
 without loss. Same base, no double count; the rates differ, and PyPSA-Eur's loss misses the
 industry heat (T19: PatEx losses per country proposed).
 
+**Chlor-alkali hydrogen (2026-11-04, T22).** PyPSA-Eur's industry ratios give chlorine
+−0.937 MWh H2/t (by-product; stoichiometry: 28.4 kg H2/t Cl2 = 0.947 MWh/t LHV). With its
+site data this is ~1.0 TWh/a in NL and ~0.5 TWh/a in BE, constant over horizons. PatEx has
+no chlorine material and no by-product route (H2 supply = imports + production by
+technology share). The net PyPSA-Eur value (uses − by-product) was negative in some nodes
+and for whole countries in 2030, which flipped the signs of the PatEx split: the split now
+uses gross uses, and the by-product is **not** added (user). Order of magnitude (desk
+research, to confirm): EU chlorine output ~8 Mt/a (Euro Chlor) → ~7.6 TWh H2/a, about 3 %
+of EU hydrogen demand (~264 TWh/a in 2023, Clean Hydrogen Observatory); NL capacity
+~0.85 Mt Cl2 → ≤ 0.8 TWh/a, BE ~1.07 Mt → ≤ 1.0 TWh/a (Euro Chlor 2021-22 site table, not
+verified). About 85-90 % is used today (burned for heat or used by neighbours), 10-15 %
+vented. Marginal at country scale; locally relevant. Energy statistics do not show it as
+a carrier (CBS); JRC-IDEES treatment not verified. Question for Climact: represent it or
+not. Sources: eurochlor.org/production, Euro Chlor FOCS-13 Hydrogen (2024), Clean
+Hydrogen Observatory market landscape (Nov 2024), CBS hydrogen balance note (2020).
+
 **Lignite.** PatEx has no lignite carrier (one `elec-plant-with-solid-coal`). PatEx's power
 emissions are not passed (PyPSA-Eur computes the power sector itself), but PyPSA-Eur's
 lignite plants do count in its CO2 constraint, with 0.407 tCO2/MWh, kept: PatEx has no

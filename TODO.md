@@ -49,8 +49,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   electricity, nuclear Generator+Link, heat vents, biomass-to-methanol, oil refining,
   bioliquids, PHS, feedstock gas; process nodes for multi-input conversions:
   methanolisation, Haber-Bosch, electrobiofuels). Left: LU electricity −0.2 TWh (3 %) and heat
-  < 0.09 TWh per node; rail stays inside electricity (the fork's energy-totals file is
-  not PatEx's).
+  < 0.09 TWh per node: all come from `model.flow_threshold` (0.1 TWh, flows below it
+  are dropped per node; with 0 the graph balances exactly). Rail stays inside electricity
+  (the fork's energy-totals file is not PatEx's).
 
 - [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
   fork `fcfd51a8`): `patex.plastics_eol_co2: false` (HVC to air emits nothing),
