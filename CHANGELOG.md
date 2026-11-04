@@ -31,6 +31,9 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 - 2026-11-04 `config/patex/levers2-be-lu-nl.yaml`: run overlay for BE, LU, NL (levers 2
   bundle, 10 nodes, 3h, solve memory 60 GB, Gurobi 32 threads);
   `config/patex/test-no-co2-cap.yaml`: technical test without CO2 cap (T11 open).
+- 2026-11-04 `patex.plastics_eol_co2` (default false, PatEx convention) and
+  `industry.waste_to_energy: true` in `config.patex.yaml` (T23); `docs/`: data flow per
+  sector (buildings, transport, industry, agriculture, energy).
 
 ## PatEx
 

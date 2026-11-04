@@ -57,13 +57,11 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   chlorine material and no by-product credit (its hydrogen is ≥ 0), so a node can get a
   negative load that PatEx never meant. Option: build the nodal key from the positive
   part only (generic, in `override_country_totals`).
-- [ ] **T23 Plastics end-of-life CO2** (decision): PyPSA-Eur releases all remaining
-  naphtha carbon to the air ("HVC to air", `HVC_environment_sequestration_fraction: 0`,
-  `waste_to_energy: false`); PatEx follows the inventory: feedstock carbon is emitted
-  only where waste is burned (waste-to-energy in `elc`, `was` module), landfilled,
-  recycled or exported plastics are not. Options: sequestration fraction from PatEx
-  waste treatment (`ind_waste-treatment-management`), or PyPSA-Eur waste-to-energy.
-  Weighs on the CO2 target (T11). Figures: `../private_notes/FINDINGS.md`.
+- [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
+  fork `fcfd51a8`): `patex.plastics_eol_co2: false` (HVC to air emits nothing),
+  `industry.waste_to_energy: true` (waste CHPs burn plastics, CO2 counted). Still a
+  **talking point with Climact / CAN**. To validate on the next nic6 run (ledger,
+  waste CHP use). Figures: `../private_notes/FINDINGS.md`.
 
 ## Waiting for Climact / CAN
 

@@ -58,6 +58,7 @@ unchanged (upstream test objective within solver tolerance).
 | `prepare_sector_network.add_ice_cars` | multiply by the share before renaming | allows a per-node share (same result for a scalar) |
 | `prepare_sector_network.add_shipping` | international navigation per country from PatEx, port split kept | `shipping_demand.csv` is built from 2023 |
 | `prepare_sector_network.add_industry` | load `gas feedstock for industry` on the gas bus, no CO2 | see `methane feedstock` |
+| `prepare_sector_network.add_industry`, `patex.plastics_eol_co2` (false) + `industry.waste_to_energy: true` | `HVC to air` emits nothing; waste CHPs burn non-recycled plastics with their CO2 | PatEx / inventory convention: plastics carbon is emitted only where waste is burned |
 | `rules/patex.smk` (`build_patex_report`) | HTML Sankey + PatEx indicators into `results/<run>/patex_report/` (not in `all`) | visual check of the PatEx side, as `build_times_sankey` in pypsa-wal |
 | `config/config.patex.yaml`, `config/test/config.patex.yaml` | run configs: `reduce_space_heat_exogenously: false`, machinery shares 0 / 1, plot colour | PatEx demand already includes renovation and machinery electrification |
 
