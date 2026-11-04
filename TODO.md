@@ -55,8 +55,11 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   country total is PatEx's, but the split over nodes uses PyPSA-Eur's industry key,
   where chlorine has a negative hydrogen ratio (chlor-alkali by-product). PatEx has no
   chlorine material and no by-product credit (its hydrogen is ≥ 0), so a node can get a
-  negative load that PatEx never meant. Option: build the nodal key from the positive
-  part only (generic, in `override_country_totals`).
+  negative load that PatEx never meant. Worse, where PyPSA-Eur's country sum is negative
+  (by-product > uses) the factor PatEx / PyPSA-Eur is negative and the signs flip: the
+  real users get a supply, the chlorine sites a demand (seen for NL 2030). Option: build
+  the nodal key from the positive part only (generic, in `override_country_totals`).
+  Waiting for the user's go.
 - [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
   fork `fcfd51a8`): `patex.plastics_eol_co2: false` (HVC to air emits nothing),
   `industry.waste_to_energy: true` (waste CHPs burn plastics, CO2 counted). Still a
