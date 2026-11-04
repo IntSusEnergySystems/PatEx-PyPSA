@@ -57,7 +57,9 @@ def main():
             "name": "CAN Europe PAC 2.0 — PyPSA-Eur",
             "subtitle": f"PatEx → PyPSA-Eur soft-link, run {a.run}",
         },
-        "model": {"network_pattern": "networks/solved_{horizon}.nc"},
+        # flows under 0.1 TWh (library default) were dropped per node, which left
+        # small countries (LU) visibly unbalanced
+        "model": {"network_pattern": "networks/solved_{horizon}.nc", "flow_threshold": 0.01},
         "nodes": {
             "detect": True,
             "focus": countries[0],

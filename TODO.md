@@ -12,9 +12,6 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
   on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
   SSH key `id_ed25519` authenticates.
-- [ ] **T14 Multi-country test run**: the test cutout (`be-03-2013-era5`) only covers BE.
-  Needs a larger ERA5 cutout (download, several GB) for e.g. BE+NL+DE+FR, then
-  `check_network_ledger.py` per country, and one myopic run 2030–2050.
 - [ ] **T15 Shipping fuel mix from PatEx**: like land transport, set the shipping loads
   per fuel from PatEx bunkers-marine + IWW by carrier (today: PyPSA-Eur default shares,
   the energy then differs from PatEx by the fuel efficiencies, −2 % on BE 2030). Same
@@ -49,8 +46,8 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   electricity, nuclear Generator+Link, heat vents, biomass-to-methanol, oil refining,
   bioliquids, PHS, feedstock gas; process nodes for multi-input conversions:
   methanolisation, Haber-Bosch, electrobiofuels). Left: LU electricity −0.2 TWh (3 %) and heat
-  < 0.09 TWh per node: all come from `model.flow_threshold` (0.1 TWh, flows below it
-  are dropped per node; with 0 the graph balances exactly). Rail stays inside electricity
+  < 0.09 TWh per node: all came from `model.flow_threshold` (0.1 TWh); set to 0.01 in
+  our config generator, the graph now balances. Rail stays inside electricity
   (the fork's energy-totals file is not PatEx's).
 
 - [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
@@ -81,6 +78,10 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Done
 
+- 2026-11-04 T14 superseded: runs on nic6 with the pre-built `europe-2013-sarah3-era5`
+  cutout (BE-LU-NL, T20).
+- 2026-11-04 pypsa2html `flow_threshold` 0.01 in `scripts/pypsa2html_config.py`: the
+  BE-LU-NL Sankey balances exactly.
 - 2026-11-04 T22 Industry hydrogen split by **gross uses** per node (fork
   `build_industrial_energy_demand_per_node.py`); chlorine by-product not introduced
   (user). Question for Climact: by-product hydrogen absent from PatEx.
