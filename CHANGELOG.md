@@ -29,7 +29,8 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
   upstream commits (`8d4b7d30`), created `develop`.
 
 - 2026-11-04 `config/patex/levers2-be-lu-nl.yaml`: run overlay for BE, LU, NL (levers 2
-  bundle, 10 nodes, 3h, solve memory 60 GB, Gurobi 32 threads).
+  bundle, 10 nodes, 3h, solve memory 60 GB, Gurobi 32 threads);
+  `config/patex/test-no-co2-cap.yaml`: technical test without CO2 cap (T11 open).
 
 ## PatEx
 

@@ -35,10 +35,14 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   central heat bus (plan in the handover).
   (Figures: `../private_notes/FINDINGS.md`.)
 
-- [ ] **T20 First multi-country run on nic6 (BE, LU, NL)**: jobs 80246 (prep) → 80247
-  (solve), `config/patex/levers2-be-lu-nl.yaml` (levers 2, 10 nodes, 3h, myopic
-  2030-2050, default CO2 budget). Then: `seff`, results back, `check_network_ledger.py`
-  per country and horizon, pypsa2html report → caneurope (`pypsa_results/`).
+- [ ] **T20 First multi-country run on nic6 (BE, LU, NL)**, `config/patex/levers2-be-lu-nl.yaml`
+  (levers 2, 10 nodes, 3h, myopic 2030-2050). With PyPSA-Eur's default CO2 budget the
+  2030 solve is **infeasible** → waits for T11 (CO2 target; option: PatEx's own emission
+  trajectory per country, "PatEx at maximum"). Technical test without cap
+  (`config/patex/test-no-co2-cap.yaml`) solved all horizons; ledger 1.0000 for BE, LU, NL
+  except shipping (0.98 → 0.87 in 2050, T15) and district heating (T19); report at
+  caneurope `pypsa_results/patex-levers2-be-lu-nl-test-no-co2-cap/` (test, empty sections:
+  T21).
 - [ ] **T21 pypsa2html and the current PyPSA-Eur layout** (decision with the user, library
   not modified yet): file names hard-coded in the old layout (`*_s_{clusters}_*`,
   `regions_onshore_base_s_*`) and the new `csvs/nodal_*.csv` format (no
