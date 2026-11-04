@@ -50,6 +50,20 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   maps are empty; `dh_by_price` fails (NaN). Options: make those names configurable in
   pypsa2html / support the new layout there, or a compatibility step on our side.
 
+- [ ] **T22 Industry hydrogen split across nodes** (proposal, user to confirm): the
+  country total is PatEx's, but the split over nodes uses PyPSA-Eur's industry key,
+  where chlorine has a negative hydrogen ratio (chlor-alkali by-product). PatEx has no
+  chlorine material and no by-product credit (its hydrogen is ≥ 0), so a node can get a
+  negative load that PatEx never meant. Option: build the nodal key from the positive
+  part only (generic, in `override_country_totals`).
+- [ ] **T23 Plastics end-of-life CO2** (decision): PyPSA-Eur releases all remaining
+  naphtha carbon to the air ("HVC to air", `HVC_environment_sequestration_fraction: 0`,
+  `waste_to_energy: false`); PatEx follows the inventory: feedstock carbon is emitted
+  only where waste is burned (waste-to-energy in `elc`, `was` module), landfilled,
+  recycled or exported plastics are not. Options: sequestration fraction from PatEx
+  waste treatment (`ind_waste-treatment-management`), or PyPSA-Eur waste-to-energy.
+  Weighs on the CO2 target (T11). Figures: `../private_notes/FINDINGS.md`.
+
 ## Waiting for Climact / CAN
 
 - [ ] **T6 PAC 2.0 lever file** → `runs/pac2/patex/levers.json` (runs use levers = 2 so far).
