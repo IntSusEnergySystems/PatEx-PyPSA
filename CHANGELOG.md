@@ -34,6 +34,14 @@ Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
 
+### 2026-11-04 — Docs cleanup
+
+- `pypsa_eur_integration/` removed (one README repeating `MODEL_CHANGES.md` and the
+  install notes); its content is in README, section "PyPSA-Eur side", with the BE test
+  command. README layout lists the docs and `private_notes/`; test commands as in both envs.
+- `SOFTLINKING_PLAN.md`: status, report row, district heating losses (T19) updated.
+- `TODO.md`: T5, T18, T19 brought in line with the handover proposals.
+
 ### 2026-11-03 — Report: Sankey and PatEx indicators
 
 - `patex_pypsa/sankey.py`, `data/sankey_flows.csv`, `data/sankey_nodes.csv`: every PatEx

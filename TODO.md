@@ -9,9 +9,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 > Session handover (decisions waiting, implementation plans): `../private_notes/NEXT_SESSION.md`
 > (outside git). T18 and T19 below: proposal made, **wait for the user's confirmation**.
 
-- [ ] **T5 Push** (needs the user's written consent in the chat): remotes are set
-  (`origin` = `IntSusEnergySystems/PatEx-PyPSA` and `IntSusEnergySystems/PyPSA-Eur-CANEU`,
-  SSH key `id_ed25519` authenticates). To push: `master` and `develop` of both repos.
+- [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
+  on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
+  SSH key `id_ed25519` authenticates.
 - [ ] **T14 Multi-country test run**: the test cutout (`be-03-2013-era5`) only covers BE.
   Needs a larger ERA5 cutout (download, several GB) for e.g. BE+NL+DE+FR, then
   `check_network_ledger.py` per country, and one myopic run 2030–2050.
@@ -24,12 +24,15 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   V2G may be overestimated where PHEVs dominate (e.g. BE).
   Option: count PHEVs × 15/50 for the DSM store only.
 
-- [ ] **T18 Non-electric cooking is lost**: PatEx gas/oil/biomass/H2 cooking is exported as `total {residential,services} cooking`, but
-  PyPSA-Eur has no load for it (upstream gap too). Options: a gas load (CO2 counted), or
-  add it to building heat. Decision needed.
-- [ ] **T19 District heating losses**: PatEx exports delivered heat and adds network
-  losses in its supply module (`network-losses[%]` per country); PyPSA-Eur adds `district_heating_loss` 15 % EU-wide on the
-  same base, so no double count. Option: PatEx losses per country instead of 15 %.
+- [ ] **T18 Non-electric cooking is lost**: PatEx gas/oil/biomass/H2 cooking is exported
+  as `total {residential,services} cooking`, but PyPSA-Eur has no load for it (upstream gap
+  too). Not heat (user). Proposal: per-carrier cooking loads on the gas / oil / biomass /
+  H2 buses, CO2 counted, flat profile (plan in the handover).
+- [ ] **T19 District heating losses**: PatEx exports delivered heat and reports network
+  losses per country (`elc_energy-sankey-detailed`, heat → distribution-losses, buildings
+  and industry); PyPSA-Eur adds `district_heating_loss` 15 % EU-wide on building heat only.
+  Proposal (user's idea): loss 0 for PatEx countries + a PatEx loss load on the urban
+  central heat bus (plan in the handover).
   (Figures: `../private_notes/FINDINGS.md`.)
 
 ## Waiting for Climact / CAN
@@ -54,6 +57,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Done
 
+- 2026-11-04 Docs cleanup (CHANGELOG); report published at the CAN Europe server
+  (address in `../../CLAUDE.md`).
+
 - 2026-11-03 Report (`patex-pypsa report`, rule `build_patex_report`): Sankey PatEx → PyPSA-Eur
   per year with country selector and reconciliation (all nodes ratio 1), PatEx indicator
   pages and catalogue, after TIMES_PyPSA. Fork pushed to origin (`46b4d243`).
@@ -68,7 +74,7 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - 2026-11-03 T1 Agriculture machinery: `agriculture_machinery_electric_share: 0`,
   `oil_share: 1` in `config/config.patex.yaml` (fork).
 - 2026-11-03 T2 Hooks applied on PyPSA-Eur-CANEU `develop`, plus land-transport and
-  shipping hooks (`pypsa_eur_integration/README.md`).
+  shipping hooks (README, "PyPSA-Eur side").
 - 2026-11-03 T3 Test run BE 2030 (one week, `config/test/config.patex.yaml`): ledger
   holds, all demands = PatEx within 0.2 % (shipping −2 %, building heat +2.4 % = district
   heating loss, both expected). `scripts/check_network_ledger.py`.

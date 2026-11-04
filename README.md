@@ -38,12 +38,15 @@ PATEX2PYPSA/
 │   │   ├── sankey_flows.csv      # Sankey path of every PatEx demand row
 │   │   ├── sankey_nodes.csv      # PyPSA-Eur nodes and the bundle columns they must equal
 │   │   └── indicators.csv        # indicator charts (variable, filters, split)
-│   ├── pypsa_eur_integration/    # README: the hooks applied in ../../PyPSA-Eur-CANEU (develop)
+│   ├── MODEL_CHANGES.md          # what is passed / changed in each model, and why
+│   ├── SOFTLINKING_PLAN.md       # design, data checks, open questions Qn
+│   ├── TODO.md, CHANGELOG.md
 │   ├── scripts/run_coupled.sh    # PatEx run → export → (snakemake)
 │   ├── scripts/check_agriculture_split.py  # base-year check vs JRC-IDEES
 │   ├── scripts/check_network_ledger.py     # composed network loads vs bundle
 │   └── tests/
-└── runs/<scenario>/              # one coupling bundle per scenario (created by runs)
+├── private_notes/                # outside git: PatEx figures (FINDINGS.md), session handover
+└── runs/<scenario>/              # one coupling bundle per scenario (created by runs, outside git)
 ```
 
 Model checkouts used: `../../patex` (uv env, Python 3.11, pandas 2.2) and `../../PyPSA-Eur-CANEU`
@@ -149,11 +152,31 @@ python scripts/check_agriculture_split.py runs/levers2 ../../PyPSA-Eur-CANEU/dat
 
 Mapping edits go in `data/` only. Each run copies the rules into `<coupling_dir>/mappings/`.
 
+## PyPSA-Eur side
+
+The hooks live only in the fork
+[`IntSusEnergySystems/PyPSA-Eur-CANEU`](https://github.com/IntSusEnergySystems/PyPSA-Eur-CANEU)
+(`../../PyPSA-Eur-CANEU`, branch `develop`), all behind `patex.enable` (default `false`).
+The list of changed files and the reasons is in [MODEL_CHANGES.md](MODEL_CHANGES.md).
+`patex_pypsa` must be installed in the pixi env (see Install); it is imported only when
+`patex.enable` is true.
+
+```bash
+cd ../../PyPSA-Eur-CANEU
+pixi run snakemake --configfile config/test/config.overnight.yaml config/test/config.patex.yaml -c4  # BE test
+# config/config.patex.yaml is the full run; it expects ../PATEX2PYPSA/runs/pac2 (T6, not built yet)
+
+# check a solved or composed network against the bundle (pixi python)
+python ../PATEX2PYPSA/PATEX_PyPSA/scripts/check_network_ledger.py \
+    results/<run>/networks/solved_<h>.nc ../PATEX2PYPSA/runs/<scenario> --horizon <h> \
+    --heating-efficiencies resources/<run>/heating_efficiencies.csv
+```
+
 ## Tests
 
 ```bash
-cd ../../patex && uv run --with pytest --with-editable ../PATEX2PYPSA/PATEX_PyPSA \
-    pytest ../PATEX2PYPSA/PATEX_PyPSA/tests
+PYTHONPATH=. ../../patex/.venv/bin/python -m pytest -q -p no:cacheprovider tests
+PYTHONPATH=. ../../PyPSA-Eur-CANEU/.pixi/envs/default/bin/python -m pytest -q -p no:cacheprovider tests
 ```
 
 The end-to-end test uses `../../patex/xx.pkl` (synthetic region `XX`) when present.

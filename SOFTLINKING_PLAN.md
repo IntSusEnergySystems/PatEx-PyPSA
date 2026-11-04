@@ -1,9 +1,10 @@
 # PatEx → PyPSA-Eur soft-linking plan
 
-**Status (2026-11-03):** steps 1, 2 (levers = 2 placeholder), 4 and 6 done. The hooks are
-applied on `develop` of the fork `IntSusEnergySystems/PyPSA-Eur-CANEU`; what is passed
-and changed per model is listed in [MODEL_CHANGES.md](MODEL_CHANGES.md). A BE test run
-passes the ledger check.
+**Status (2026-11-04):** steps 1, 2 (levers = 2 placeholder), 4 and 6 done, step 5 partly
+(land transport, district heating, CO2 intensities). The hooks are applied on `develop` of
+the fork `IntSusEnergySystems/PyPSA-Eur-CANEU`; what is passed and changed per model is
+listed in [MODEL_CHANGES.md](MODEL_CHANGES.md). A BE test run passes the ledger check. The
+HTML report (Sankey + PatEx indicators) is built from the bundle. Next: [TODO.md](TODO.md).
 
 ## 1. What we reuse from TIMES2PYPSA and what changes
 
@@ -16,7 +17,7 @@ passes the ledger check.
 | Input = `.vd` file, PJ, timeslices | Input = `patex run -o` pickle, TWh, annual, 5-year steps | Different model output |
 | One node (BEWAL) overwritten | **every country** rescaled, nodal distribution kept (`override_country_totals`) | PatEx is national, multi-country |
 | Hard-coded hooks in pypsa-wal scripts | config section `patex:` via PyPSA-Eur `ConfigUpdater`, hooks behind `patex.enable` | Easier to rebase on upstream PyPSA-Eur |
-| Sankey/QA pages | `coverage.csv` + `patex_demands_long.csv` (Sankey later if needed: `elc_energy-sankey-detailed`) | Start small |
+| Sankey/QA pages | `coverage.csv`, `patex_demands_long.csv`, and the report (`patex-pypsa report`: Sankey fuel → PatEx sector → PyPSA-Eur input, indicator pages) | Same pages as TIMES_PyPSA, checked against the bundle |
 
 ## 2. Data flow
 
@@ -63,7 +64,7 @@ patex run "BE|FR|..."  ── run.pkl ─▶ export-coupling ── pypsa_inputs
    `energy_totals.csv` for the latest year: the gaps show definition mismatches (final vs
    useful energy, ambient heat, district heat, bunkers).
 4. **Apply the PyPSA-Eur hooks** — done on `develop` of PyPSA-Eur-CANEU
-   (`pypsa_eur_integration/README.md`): energy totals, base load, industry, plus two hooks
+   (README, "PyPSA-Eur side"): energy totals, base load, industry, plus two hooks
    found while applying them (land transport, international shipping, see below).
 5. **Pass the scenario parameters that are not demands**, one at a time, each with an
    explicit meaning:
@@ -235,7 +236,8 @@ module (`heat_demand = heat + heat × network-losses[%]`, per country) and repor
 `elc_energy-sankey-detailed` (heat → distribution-losses), for buildings and industry heat
 together. PyPSA-Eur multiplies the building urban central heat demand by
 `1 + district_heating_loss` (0.15) and puts industry low-temperature heat on the same bus
-without loss. Same base, no double count; the rates differ (T19).
+without loss. Same base, no double count; the rates differ, and PyPSA-Eur's loss misses the
+industry heat (T19: PatEx losses per country proposed).
 
 **Lignite.** PatEx has no lignite carrier (one `elec-plant-with-solid-coal`). PatEx's power
 emissions are not passed (PyPSA-Eur computes the power sector itself), but PyPSA-Eur's
