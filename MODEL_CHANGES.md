@@ -49,7 +49,7 @@ unchanged (upstream test objective within solver tolerance).
 | `scripts/_patex_config.py`, `config_updates.py`, `config.default.yaml`, schema | `patex:` section (`enable`, `coupling_dir`, `fallback_countries`, `energy_totals`, `industry`, `co2_intensity`, `district_heating`, `base_load`) | config keys must be declared (strict validation) |
 | `rules/patex.smk`, `scripts/build_patex_demands.py` | copy and check the bundle per horizon | each run records its PatEx inputs; a missing country fails |
 | `rules/compose.smk`, `rules/build_sector.smk` | PatEx inputs wired when enabled | |
-| `build_industrial_energy_demand_per_node.py` | industry carriers and process emissions per country from PatEx | |
+| `build_industrial_energy_demand_per_node.py` | industry carriers and process emissions per country from PatEx; hydrogen split over nodes by gross uses | the chlorine by-product (negative in PyPSA-Eur's ratios, absent from PatEx) flipped the split's signs |
 | `build_district_heat_share.py` | country share from PatEx, spread like today's share | PatEx sets district heating per horizon |
 | `compose_network.py` | CO2 intensity of gas, oil, coal from the bundle | same CO2 per fuel as PatEx |
 | `prepare_sector_network.main` | energy totals per country from PatEx (heat, agriculture, aviation, navigation); base load rescaled at the end | |

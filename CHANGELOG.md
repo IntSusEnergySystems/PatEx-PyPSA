@@ -34,6 +34,7 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 - 2026-11-04 `patex.plastics_eol_co2` (default false, PatEx convention) and
   `industry.waste_to_energy: true` in `config.patex.yaml` (T23); `docs/`: data flow per
   sector (buildings, transport, industry, agriculture, energy).
+- 2026-11-04 Industry hydrogen split over nodes by gross uses (T22).
 
 ## PatEx
 

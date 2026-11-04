@@ -52,19 +52,6 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   < 0.09 TWh per node; rail stays inside electricity (the fork's energy-totals file is
   not PatEx's).
 
-- [ ] **T22 Industry hydrogen split across nodes** (proposal, user to confirm): the
-  country total is PatEx's, but the split over nodes uses PyPSA-Eur's industry key,
-  where chlorine has a negative hydrogen ratio (chlor-alkali by-product). PatEx has no
-  chlorine material and no by-product credit (its hydrogen is ≥ 0), so a node can get a
-  negative load that PatEx never meant. Worse, where PyPSA-Eur's country sum is negative
-  (by-product > uses) the factor PatEx / PyPSA-Eur is negative and the signs flip: the
-  real users get a supply, the chlorine sites a demand (seen for NL 2030). Many nodes
-  both use H2 and produce it, so the positive part of the net value is not the right key.
-  Proposal: key = **gross uses** per node (sum of the sectors with a positive hydrogen
-  ratio), by-product left out (PatEx has no by-product: its H2 supply is imports +
-  production by technology share, `energy_supply/hydrogen.py`). Separate question for
-  Climact: should the chlor-alkali by-product (PyPSA-Eur data, constant over horizons)
-  enter as an H2 supply? Waiting for the user's go.
 - [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
   fork `fcfd51a8`): `patex.plastics_eol_co2: false` (HVC to air emits nothing),
   `industry.waste_to_energy: true` (waste CHPs burn plastics, CO2 counted). Still a
@@ -93,6 +80,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Done
 
+- 2026-11-04 T22 Industry hydrogen split by **gross uses** per node (fork
+  `build_industrial_energy_demand_per_node.py`); chlorine by-product not introduced
+  (user). Question for Climact: by-product hydrogen absent from PatEx.
 - 2026-11-04 nic6 set up (`../../CLUSTER_NIC6.md`): pixi env on scratch, Gurobi token
   license, `scripts/cluster/` (env, generic Slurm job), `scripts/pypsa2html_config.py`
   (country groups from `n.buses.country`).
