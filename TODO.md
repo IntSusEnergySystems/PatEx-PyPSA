@@ -47,7 +47,8 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   `can-climact` of `../../pypsa2html` (**never push**: it would change other projects'
   reports). Single-header CSVs, resource names, Sankey balance (methanolisation
   electricity, nuclear Generator+Link, heat vents, biomass-to-methanol, oil refining,
-  bioliquids, PHS, feedstock gas). Left: LU electricity −0.2 TWh (3 %) and heat
+  bioliquids, PHS, feedstock gas; process nodes for multi-input conversions:
+  methanolisation, Haber-Bosch, electrobiofuels). Left: LU electricity −0.2 TWh (3 %) and heat
   < 0.09 TWh per node; rail stays inside electricity (the fork's energy-totals file is
   not PatEx's).
 
@@ -57,9 +58,13 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   chlorine material and no by-product credit (its hydrogen is ≥ 0), so a node can get a
   negative load that PatEx never meant. Worse, where PyPSA-Eur's country sum is negative
   (by-product > uses) the factor PatEx / PyPSA-Eur is negative and the signs flip: the
-  real users get a supply, the chlorine sites a demand (seen for NL 2030). Option: build
-  the nodal key from the positive part only (generic, in `override_country_totals`).
-  Waiting for the user's go.
+  real users get a supply, the chlorine sites a demand (seen for NL 2030). Many nodes
+  both use H2 and produce it, so the positive part of the net value is not the right key.
+  Proposal: key = **gross uses** per node (sum of the sectors with a positive hydrogen
+  ratio), by-product left out (PatEx has no by-product: its H2 supply is imports +
+  production by technology share, `energy_supply/hydrogen.py`). Separate question for
+  Climact: should the chlor-alkali by-product (PyPSA-Eur data, constant over horizons)
+  enter as an H2 supply? Waiting for the user's go.
 - [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
   fork `fcfd51a8`): `patex.plastics_eol_co2: false` (HVC to air emits nothing),
   `industry.waste_to_energy: true` (waste CHPs burn plastics, CO2 counted). Still a
