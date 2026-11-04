@@ -43,12 +43,13 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   except shipping (0.98 → 0.87 in 2050, T15) and district heating (T19); report at
   caneurope `pypsa_results/patex-levers2-be-lu-nl-test-no-co2-cap/` (test, empty sections:
   T21).
-- [ ] **T21 pypsa2html and the current PyPSA-Eur layout** (decision with the user, library
-  not modified yet): file names hard-coded in the old layout (`*_s_{clusters}_*`,
-  `regions_onshore_base_s_*`) and the new `csvs/nodal_*.csv` format (no
-  `planning_horizon` header row) → capacity and cost pages, part of the Sankey and the
-  maps are empty; `dh_by_price` fails (NaN). Options: make those names configurable in
-  pypsa2html / support the new layout there, or a compatibility step on our side.
+- [ ] **T21 pypsa2html on the current PyPSA-Eur layout**: done on the local branch
+  `can-climact` of `../../pypsa2html` (**never push**: it would change other projects'
+  reports). Single-header CSVs, resource names, Sankey balance (methanolisation
+  electricity, nuclear Generator+Link, heat vents, biomass-to-methanol, oil refining,
+  bioliquids, PHS, feedstock gas). Left: LU electricity −0.2 TWh (3 %) and heat
+  < 0.09 TWh per node; rail stays inside electricity (the fork's energy-totals file is
+  not PatEx's).
 
 - [ ] **T22 Industry hydrogen split across nodes** (proposal, user to confirm): the
   country total is PatEx's, but the split over nodes uses PyPSA-Eur's industry key,
