@@ -7,6 +7,8 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-05 Gas storage from working gas, no clip (behind `patex.enable`;
+  `build_gas_input_locations` param `patex_enable`); `docs/energy.md`.
 - 2026-11-05 T27 reverted: no `scale_patex_industry_co2`, no industry intensity file; physical
   factors; `docs/energy.md` explains why (CRF calibration not transferred). Test overlay
   without cap at 24h (fast chain test).

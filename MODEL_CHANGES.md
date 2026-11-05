@@ -55,6 +55,7 @@ unchanged (upstream test objective within solver tolerance).
 | `rules/compose.smk`, `rules/build_sector.smk` | PatEx inputs wired when enabled | |
 | `build_industrial_energy_demand_per_node.py` | industry carriers and process emissions per country from PatEx; hydrogen split over nodes by gross uses | the chlorine by-product (negative in PyPSA-Eur's ratios, absent from PatEx) flipped the split's signs |
 | `build_district_heat_share.py` | country share from PatEx, spread like today's share | PatEx sets district heating per horizon |
+| `build_gas_input_locations.py`, `prepare_sector_network.add_h2_gas_infrastructure` | existing gas storage = SciGRID working gas (not cushion gas), no 98 % clip | upstream data bug (found in PyPSA-Wal): BE storage 15x too small, NL 4x too large |
 | `compose_network.py` | CO2 intensity of gas, oil, coal from the bundle (the `oil refining` row is skipped) | same CO2 per fuel as PatEx |
 | `prepare_sector_network.main` | `industry.oil_refining_emissions` from the bundle (T26); error if the row is missing | refinery CO2 per MWh from PatEx |
 | `prepare_sector_network.main` | energy totals per country from PatEx (heat, agriculture, aviation, navigation); base load rescaled at the end | |

@@ -12,6 +12,32 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
   on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
   SSH key `id_ed25519` authenticates.
+### System constraints from PyPSA-Wal (decided 2026-11-05; general, every country)
+
+Ported in this order, each as an option behind `patex.enable` with its data retrieved
+online (rule + source + date in the fork's `docs/`), never hand-written per country.
+PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the code.
+
+- [ ] **T28 National CO2 caps** (with T11), keeping the EU cap as an option: per-country
+  cap on the CO2 of the links located in the country (PyPSA-Wal `add_co2limit_country`).
+  Trap: carriers on EU-level buses (oil, methanol, kerosene, shipping, naphtha) carry their
+  bio / synthetic credit at EU level, so a national cap charges the fossil CO2 without the
+  credit (PyPSA-Wal excluded aviation). Data: national targets (CAN) or PatEx trajectory.
+- [ ] **T30 Cross-border capacity limits** per border (NTC ceilings, grid expansion up to
+  them; PyPSA-Wal `set_NTCs.py`). Data: ENTSO-E TYNDP 2024 for every border.
+- [ ] **T29 Import limits** per country: electricity (share of local supply or TWh/a,
+  PyPSA-Wal `add_selfsufficiency_constraints`), plus optional limits per imported fuel
+  (gas, oil, H2, methanol, ammonia...). Data: scenario values (CAN / PatEx).
+- [ ] **T31 Offshore wind potentials** per country from marine spatial plans (upstream's
+  2 MW/km² is below installed capacity in BE, NL, DE). Data: national maritime spatial
+  plans / EU MSP platform.
+- [ ] **T32 CO2 storage limits**: per-site cap (upstream's 25 Gt clip is too large) and a
+  deployment ramp per country. Data: CO2StoP / national CCS strategies.
+- [ ] (undecided) **T33 Build-rate limits** for renewables per country (IRENA additions ×
+  factor, PyPSA-Wal `res_growth_allowance`).
+- [ ] (to discuss) **T34 Nuclear**: existing fleet and phase-out dates per country, must-run,
+  no new build in a 100 % renewables scenario (PyPSA-Wal `inflexible_nuclear`).
+
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE).
@@ -83,6 +109,8 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Done
 
+- 2026-11-05 Gas storage = working gas (upstream reads the cushion gas: BE 15x too small,
+  NL 4x too large), no 98 % clip (PatEx runs only). BE test: Loenhout 8.2 TWh.
 - 2026-11-05 T26 Refinery CO2 per MWh of oil from PatEx (emissions / output), replaces
   `oil_refining_emissions`. T27 PatEx's CRF calibration tried (industry factors per
   country), then **not transferred**: physical factors everywhere, baseline consistency as a
