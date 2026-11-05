@@ -33,9 +33,11 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   2030 solve is **infeasible** → waits for T11 (CO2 target; option: PatEx's own emission
   trajectory per country, "PatEx at maximum"). Technical test without cap
   (`config/patex/test-no-co2-cap.yaml`) solved all horizons; ledger 1.0000 for BE, LU, NL
-  except shipping (0.98 → 0.87 in 2050, T15, now fixed) and district heating (T19); report at
-  caneurope `pypsa_results/patex-levers2-be-lu-nl-test-no-co2-cap/` (test, empty sections:
-  T21).
+  except shipping (0.98 → 0.87 in 2050, T15) and district heating (T19). **Rerun 2026-11-05
+  after T15** (fork `0a57d75d`): ledger 1.0000 for every load, every horizon, BE, LU, NL
+  (shipping included), except district heating losses (T19); report republished at
+  caneurope `pypsa_results/patex-levers2-be-lu-nl-test-no-co2-cap/` (test; Sankey
+  electricity gap = new T15 carriers, T21).
 - [ ] **T21 pypsa2html on the current PyPSA-Eur layout**: done on the local branch
   `can-climact` of `../../pypsa2html` (**never push**: it would change other projects'
   reports). Single-header CSVs, resource names, Sankey balance (methanolisation
@@ -43,8 +45,11 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   bioliquids, PHS, feedstock gas; process nodes for multi-input conversions:
   methanolisation, Haber-Bosch, electrobiofuels). Left: LU electricity −0.2 TWh (3 %) and heat
   < 0.09 TWh per node: all came from `model.flow_threshold` (0.1 TWh); set to 0.01 in
-  our config generator, the graph now balances. Rail stays inside electricity
-  (the fork's energy-totals file is not PatEx's).
+  our config generator, the graph now balances. **Since T15** the electricity node is off by
+  the new loads (`rail electricity`, `aviation electricity`, `shipping electricity`, plus
+  `H2 for rail`, `land transport gas`), missing from `data/carrier_flows_energy.csv`;
+  `_rail_demand` (rail from energy totals) becomes redundant. Fix waits for Julien's go
+  (pypsa2html).
 
 - [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
   fork `fcfd51a8`): `patex.plastics_eol_co2: false` (HVC to air emits nothing),

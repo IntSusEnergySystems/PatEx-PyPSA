@@ -7,6 +7,8 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-05 BE-LU-NL overlays: solve `mem_mb` 25000, Gurobi 16 threads (measured on nic6);
+  test overlay without CO2 cap: no `co2_stored` interactive map (empty balance without cap).
 - 2026-11-03 Rule `build_patex_report` (`rules/patex.smk`, not in `all`).
 - 2026-11-03 Pushed `master` and `develop` to origin (user consent).
 
