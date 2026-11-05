@@ -11,17 +11,21 @@ bld_energy-demand[TWh],building-type=non-residential; end-use!=heating|hotwater;
 bld_energy-demand[TWh],building-type=non-residential; end-use!=heating|hotwater; energy-carrier!=electricity,,Services other uses,Not modelled in PyPSA-Eur,"Non-electric cooking (total services cooking, not used by PyPSA-Eur)."
 tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=electricity,,Road,Land transport EV,
 tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=hydrogen,,Road,Land transport fuel cell,
-tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier!=electricity|hydrogen,,Road,Land transport oil,"Gas vehicles included: no gas vehicles in PyPSA-Eur."
-tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=electricity,,Rail,Electricity base load,
-tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier!=electricity,,Rail,Land transport oil,"Hydrogen rail included (T15)."
-tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier=electricity,,Aviation,Electricity base load,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=gaseous-ff-natural|gaseous-bio|gaseous-syn,,Road,Land transport gas,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier!=electricity|hydrogen|gaseous-ff-natural|gaseous-bio|gaseous-syn,,Road,Land transport oil,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=electricity,,Rail,Rail electricity,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=hydrogen,,Rail,Rail hydrogen,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier!=electricity|hydrogen,,Rail,Land transport oil,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier=electricity,,Aviation,Aviation electricity,
 tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier!=electricity,,Aviation,Aviation kerosene,
-tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-aviation; energy-carrier=electricity,,Aviation,Electricity base load,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-aviation; energy-carrier=electricity,,Aviation,Aviation electricity,
 tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-aviation; energy-carrier!=electricity,,Aviation,Aviation kerosene,
-tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier=electricity,,Navigation,Electricity base load,
-tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier!=electricity,,Navigation,Shipping,
-tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier=electricity,,Navigation,Electricity base load,
-tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier!=electricity,,Navigation,Shipping,"PyPSA-Eur splits it into oil, methanol and hydrogen with its own shares (T15)."
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier=electricity,,Navigation,Shipping electricity,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier=hydrogen,,Navigation,Shipping hydrogen,
+tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier!=electricity|hydrogen,,Navigation,Shipping oil,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier=electricity,,Navigation,Shipping electricity,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier=hydrogen,,Navigation,Shipping hydrogen,
+tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier!=electricity|hydrogen,,Navigation,Shipping oil,"Fuel split from PatEx; no methanol or ammonia ships in PatEx (Q14)."
 ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=electricity,,Industry ({feedstock-type}),Industry electricity,
 ind_energy-demand-by-carrier-feedstock[TWh],feedstock-type=excl-feedstock; energy-carrier=gaseous-ff-natural|gaseous-bio|gaseous-syn,,Industry ({feedstock-type}),Industry gas,
 ind_energy-demand-by-carrier-feedstock[TWh],feedstock-type=feedstock; energy-carrier=gaseous-ff-natural|gaseous-bio|gaseous-syn,,Industry ({feedstock-type}),Industry gas feedstock (no CO2),"Ammonia and olefins; its CO2 is in the PatEx process emissions."

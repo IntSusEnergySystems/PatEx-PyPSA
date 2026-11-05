@@ -31,7 +31,8 @@ def land_transport_scale(
     unit_profiles
         engine → snapshot × node load profile of PyPSA-Eur for a share of 1 (MW).
     energy
-        node × engine final energy over the modelled period (MWh).
+        node × engine final energy over the modelled period (MWh); engines
+        ``ENGINES`` and, optionally, ``gas`` (gas vehicles, ICE profile).
     weights
         snapshot weightings (h).
 
@@ -41,8 +42,8 @@ def land_transport_scale(
     ``factor × unit profile`` sums to ``energy``. 0 where PatEx has no energy.
     """
     nodes = energy.index
-    out = pd.DataFrame(0.0, index=nodes, columns=ENGINES)
-    for engine in ENGINES:
+    out = pd.DataFrame(0.0, index=nodes, columns=energy.columns)
+    for engine in energy.columns:
         annual = unit_profiles[engine][nodes].mul(weights, axis=0).sum()
         out[engine] = (energy[engine] / annual.where(annual > 0)).fillna(0.0)
     return out

@@ -12,10 +12,6 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
   on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
   SSH key `id_ed25519` authenticates.
-- [ ] **T15 Shipping fuel mix from PatEx**: like land transport, set the shipping loads
-  per fuel from PatEx bunkers-marine + IWW by carrier (today: PyPSA-Eur default shares,
-  the energy then differs from PatEx by the fuel efficiencies, −2 % on BE 2030). Same
-  question for hydrogen rail and gas road, served as oil now.
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE).
@@ -37,7 +33,7 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   2030 solve is **infeasible** → waits for T11 (CO2 target; option: PatEx's own emission
   trajectory per country, "PatEx at maximum"). Technical test without cap
   (`config/patex/test-no-co2-cap.yaml`) solved all horizons; ledger 1.0000 for BE, LU, NL
-  except shipping (0.98 → 0.87 in 2050, T15) and district heating (T19); report at
+  except shipping (0.98 → 0.87 in 2050, T15, now fixed) and district heating (T19); report at
   caneurope `pypsa_results/patex-levers2-be-lu-nl-test-no-co2-cap/` (test, empty sections:
   T21).
 - [ ] **T21 pypsa2html on the current PyPSA-Eur layout**: done on the local branch
@@ -77,6 +73,15 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T13 Compare back** PyPSA supply results with PatEx `elc_*` outputs (plan step 8).
 
 ## Done
+
+- 2026-11-05 T15 Every PatEx transport fuel has its own load: shipping fuel split from
+  PatEx (energy per fuel, no PyPSA-Eur shares or efficiencies; methanol 0 since PatEx has
+  none, Q14), gas road (`land transport gas`, gas bus with CO2), hydrogen rail, rail /
+  aviation / shipping electricity (out of the base load). BE 2030 ledger: all 1.0000
+  except district heating (T19). Bundle `levers2` re-exported; nic6 needs the new code
+  and bundle before the next run.
+- 2026-11-05 `SOFTLINKING_PLAN.md` → `OPEN_QUESTIONS.md` (open questions only); settled
+  reasons in the fork's `docs/<sector>.md` ("Why").
 
 - 2026-11-04 T14 superseded: runs on nic6 with the pre-built `europe-2013-sarah3-era5`
   cutout (BE-LU-NL, T20).

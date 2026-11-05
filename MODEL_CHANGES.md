@@ -20,10 +20,11 @@ and, for the CO2 factors only, the dataset.
 | PyPSA-Eur input | From PatEx | Why this way |
 |---|---|---|
 | Building heat (`total/electricity {residential,services} {space,water}`) | `bld_energy-demand-incl-district-heating` − ambient heat | final energy incl. district heat, the base of PyPSA-Eur's heat totals; ambient heat is modelled by PyPSA through heat-pump COPs |
-| `electricity base load` (new) | building electricity − electric heating + electric rail, aviation and shipping | residual hourly load after PyPSA-Eur's explicit electric heating; PyPSA-Eur has no electric rail, aviation or shipping load |
+| `electricity base load` (new) | building electricity − electric heating | residual hourly load after PyPSA-Eur's explicit electric heating |
 | Agriculture electricity / heat / machinery | by carrier, split by use with JRC-IDEES 2021 shares per country | PyPSA-Eur needs uses, PatEx has carriers; electric machinery goes to electricity |
-| Road: `electricity road`, `hydrogen road` (new), ICE rest | road + non-electric rail by carrier | loads set per fuel (see fork, land transport); gas vehicles served as oil (no gas vehicles in PyPSA-Eur) |
-| Aviation, navigation | domestic + bunkers, without their electricity | electricity goes to the base load |
+| Road and rail: `electricity road`, `hydrogen road`, `gas road`, `electricity rail`, `hydrogen rail` (new except `electricity rail`), ICE rest | road + rail by carrier | one load per fuel (see fork, land transport) |
+| Aviation, navigation | domestic + bunkers, without their electricity | kerosene / shipping loads |
+| `electricity aviation`, `electricity navigation`, `hydrogen navigation` (new) | domestic + bunkers by carrier | own loads; hydrogen share of shipping per country (PatEx has no methanol or ammonia ships, Q14) |
 | Industry carriers | `ind_energy-demand-by-carrier-feedstock` | PatEx `solid-ff-coal` includes coke |
 | `methane feedstock` (new) | feedstock gas (ammonia, olefins) | not burnt: no combustion CO2; its released CO2 is in PatEx process emissions |
 | `ammonia`, `methanol`, `coke` = 0 | — | PatEx makes them from carriers already exported; PyPSA-Eur would make them again |
@@ -53,10 +54,12 @@ unchanged (upstream test objective within solver tolerance).
 | `build_district_heat_share.py` | country share from PatEx, spread like today's share | PatEx sets district heating per horizon |
 | `compose_network.py` | CO2 intensity of gas, oil, coal from the bundle | same CO2 per fuel as PatEx |
 | `prepare_sector_network.main` | energy totals per country from PatEx (heat, agriculture, aviation, navigation); base load rescaled at the end | |
-| `prepare_sector_network.add_land_transport` | EV, fuel-cell and oil loads = PyPSA-Eur hourly profile × PatEx energy per fuel; EV fleet from PatEx | PyPSA-Eur builds road demand once from 2023 energy as a distance; PatEx gives future energy per fuel |
+| `prepare_sector_network.add_land_transport` | EV, fuel-cell, gas and oil loads = PyPSA-Eur hourly profile × PatEx energy per fuel; EV fleet from PatEx | PyPSA-Eur builds road demand once from 2023 energy as a distance; PatEx gives future energy per fuel |
 | `prepare_sector_network.add_EVs` | optional `number_evs` sizes chargers / DSM / V2G | instead of share × today's cars |
 | `prepare_sector_network.add_ice_cars` | multiply by the share before renaming | allows a per-node share (same result for a scalar) |
-| `prepare_sector_network.add_shipping` | international navigation per country from PatEx, port split kept | `shipping_demand.csv` is built from 2023 |
+| `prepare_sector_network.add_shipping` | international navigation per country from PatEx, port split kept; fuel shares per country from PatEx, energy per fuel without conversion | `shipping_demand.csv` is built from 2023; PyPSA-Eur's shares and efficiencies would change PatEx's fuel mix and energy |
+| `prepare_sector_network.add_gas_vehicles` (new) | `land transport gas` load per node, ICE profile, from the gas bus with CO2 | PyPSA-Eur has no gas vehicles |
+| `prepare_sector_network.add_patex_transport_loads` (new) | loads `rail electricity`, `aviation electricity`, `shipping electricity` (base-load shape, transmission bus), `H2 for rail` (flat) | PyPSA-Eur has no such loads; each fuel visible in its own load |
 | `prepare_sector_network.add_industry` | load `gas feedstock for industry` on the gas bus, no CO2 | see `methane feedstock` |
 | `prepare_sector_network.add_industry`, `patex.plastics_eol_co2` (false) + `industry.waste_to_energy: true` | `HVC to air` emits nothing; waste CHPs burn non-recycled plastics with their CO2 | PatEx / inventory convention: plastics carbon is emitted only where waste is burned |
 | `rules/patex.smk` (`build_patex_report`) | HTML Sankey + PatEx indicators into `results/<run>/patex_report/` (not in `all`) | visual check of the PatEx side, as `build_times_sankey` in pypsa-wal |
@@ -86,6 +89,5 @@ and reconciles each PyPSA-Eur node with the bundle (levers 2, all horizons: rati
 
 `scripts/check_network_ledger.py` compares a solved or composed network with the bundle:
 loads per carrier and country, process emissions, EV fleet, district heating share and
-CO2 intensities. BE 2030 test: all 1.0000, except shipping 0.98 (PyPSA-Eur shipping fuel
-shares, T15) and district heating +15 % / building heat +0.5 % (PyPSA-Eur district heating
-losses).
+CO2 intensities. BE 2030 test: all 1.0000, except district heating +15 % / building heat
++0.5 % (PyPSA-Eur district heating losses, T19).

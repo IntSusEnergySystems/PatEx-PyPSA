@@ -4,9 +4,15 @@ Ambient heat (heat-pump COP),not passed,,
 Electricity base load,electricity,energy_totals,electricity base load
 Land transport EV,transport,energy_totals,electricity road
 Land transport fuel cell,transport,energy_totals,hydrogen road
-Land transport oil,transport,energy_totals,total road + total rail - electricity rail - electricity road - hydrogen road
+Land transport gas,transport,energy_totals,gas road
+Land transport oil,transport,energy_totals,total road + total rail - electricity rail - hydrogen rail - electricity road - hydrogen road - gas road
+Rail electricity,transport,energy_totals,electricity rail
+Rail hydrogen,transport,energy_totals,hydrogen rail
 Aviation kerosene,transport,energy_totals,total domestic aviation + total international aviation
-Shipping,transport,energy_totals,total domestic navigation + total international navigation
+Aviation electricity,transport,energy_totals,electricity aviation
+Shipping oil,transport,energy_totals,total domestic navigation + total international navigation - hydrogen navigation
+Shipping hydrogen,transport,energy_totals,hydrogen navigation
+Shipping electricity,transport,energy_totals,electricity navigation
 Industry electricity,industry,industry,electricity
 Industry gas,industry,industry,methane
 Industry gas feedstock (no CO2),industry,industry,methane feedstock

@@ -115,11 +115,14 @@ def test_land_transport_scale_reproduces_energy_per_fuel():
         "electric": pd.DataFrame({"BE0": [1.0, 3.0]}, index=snapshots),
         "fuel_cell": pd.DataFrame({"BE0": [2.0, 2.0]}, index=snapshots),
         "ice": pd.DataFrame({"BE0": [0.0, 0.0]}, index=snapshots),
+        "gas": pd.DataFrame({"BE0": [1.0, 1.0]}, index=snapshots),
     }
-    energy = pd.DataFrame({"electric": [8.0], "fuel_cell": [2.0], "ice": [5.0]}, index=["BE0"])
+    energy = pd.DataFrame(
+        {"electric": [8.0], "fuel_cell": [2.0], "ice": [5.0], "gas": [3.0]}, index=["BE0"]
+    )
     weights = pd.Series(2.0, index=snapshots)  # 2 h per snapshot
     factor = land_transport_scale(profiles, energy, weights)
-    for engine in ("electric", "fuel_cell"):
+    for engine in ("electric", "fuel_cell", "gas"):
         burnt = (factor.at["BE0", engine] * profiles[engine]["BE0"] * weights).sum()
         assert burnt == pytest.approx(energy.at["BE0", engine])
     assert factor.at["BE0", "ice"] == 0.0  # no profile: no load rather than a division by 0

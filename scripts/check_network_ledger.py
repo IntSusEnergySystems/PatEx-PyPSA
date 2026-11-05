@@ -19,8 +19,10 @@ import pandas as pd
 import pypsa
 
 LAND_ICE = (
-    "total road + total rail - electricity rail - electricity road - hydrogen road"
+    "total road + total rail - electricity rail - hydrogen rail"
+    " - electricity road - hydrogen road - gas road"
 )
+NAVIGATION = "total domestic navigation + total international navigation"
 
 # PyPSA-Eur load carrier(s) -> (bundle, PatEx expression, note)
 CHECKS = {
@@ -46,17 +48,33 @@ CHECKS = {
         "",
     ),
     "land transport oil": (["land transport oil"], "energy_totals", LAND_ICE, ""),
+    "land transport gas": (["land transport gas"], "energy_totals", "gas road", ""),
+    "rail electricity": (["rail electricity"], "energy_totals", "electricity rail", ""),
+    "rail hydrogen": (["H2 for rail"], "energy_totals", "hydrogen rail", ""),
+    "aviation electricity": (
+        ["aviation electricity"],
+        "energy_totals",
+        "electricity aviation",
+        "",
+    ),
     "aviation": (
         ["kerosene for aviation"],
         "energy_totals",
         "total domestic aviation + total international aviation",
         "",
     ),
-    "shipping": (
-        ["shipping oil", "shipping methanol", "H2 for shipping"],
+    "shipping oil": (
+        ["shipping oil"],
         "energy_totals",
-        "total domestic navigation + total international navigation",
-        "differs by the fuel efficiencies of the shipping shares",
+        f"{NAVIGATION} - hydrogen navigation",
+        "PatEx has no methanol ships",
+    ),
+    "shipping hydrogen": (["H2 for shipping"], "energy_totals", "hydrogen navigation", ""),
+    "shipping electricity": (
+        ["shipping electricity"],
+        "energy_totals",
+        "electricity navigation",
+        "",
     ),
     "industry electricity": (["industry electricity"], "industry", "electricity", ""),
     "industry hydrogen": (["H2 for industry"], "industry", "hydrogen", ""),

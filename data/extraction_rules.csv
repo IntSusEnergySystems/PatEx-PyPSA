@@ -27,7 +27,8 @@ solids,agriculture,1,agr_energy-demand-by-vector[TWh],energy-carrier=solid-ff-co
 biomass,agriculture,1,agr_energy-demand-by-vector[TWh],energy-carrier=solid-biomass,
 total road,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus,
 electricity road,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=electricity,
-hydrogen road,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=hydrogen,"Not a PyPSA-Eur column: fuel-cell road vehicles. With electricity road it sets the per-node land_transport shares (patex_pypsa.transport). Gas road (fossil, bio, syn) stays in the ICE part, served as oil."
+hydrogen road,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=hydrogen,"Not a PyPSA-Eur column: fuel-cell road vehicles (patex_pypsa.transport)."
+gas road,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=gaseous-ff-natural|gaseous-bio|gaseous-syn,"Not a PyPSA-Eur column: gas road vehicles, a load on the gas bus with CO2 (ICE profile). PyPSA decides the gas origin."
 total passenger cars,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],transport-user=passenger; vehicule-type=LDV,
 electricity passenger cars,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],transport-user=passenger; vehicule-type=LDV; energy-carrier=electricity,
 total two-wheel,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W,
@@ -37,9 +38,16 @@ total light duty road freight,energy_totals,1,tra_energy-demand-domestic-by-carr
 electricity light duty road freight,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],transport-user=freight; vehicule-type=LDV; energy-carrier=electricity,
 total heavy duty road freight,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],transport-user=freight; vehicule-type=HDV,
 total rail,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail,
-electricity rail,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=electricity,
-total domestic aviation,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier!=electricity,"Electric aviation is in electricity base load (PyPSA-Eur serves aviation as kerosene)."
-total domestic navigation,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier!=electricity,"Inland waterways, electric part in electricity base load. Check whether PatEx domestic maritime is in IWW or in bunkers-marine."
+electricity rail,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=electricity,"Own load (rail electricity), not in the base load."
+hydrogen rail,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=hydrogen,"Not a PyPSA-Eur column: load on the H2 bus (flat)."
+electricity aviation,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier=electricity,"Not a PyPSA-Eur column: own load (aviation electricity), domestic + bunkers."
+electricity aviation,energy_totals,1,tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-aviation; energy-carrier=electricity,
+electricity navigation,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier=electricity,"Not a PyPSA-Eur column: own load (shipping electricity), IWW + bunkers."
+electricity navigation,energy_totals,1,tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier=electricity,
+hydrogen navigation,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier=hydrogen,"Not a PyPSA-Eur column: hydrogen share of navigation per country (add_shipping); the rest of total navigation is oil. PatEx has no methanol or ammonia ships (Q14)."
+hydrogen navigation,energy_totals,1,tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier=hydrogen,
+total domestic aviation,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation; energy-carrier!=electricity,"Electric aviation: electricity aviation (PyPSA-Eur serves aviation as kerosene)."
+total domestic navigation,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=IWW; energy-carrier!=electricity,"Inland waterways, electric part in electricity navigation. Domestic maritime in IWW or bunkers-marine: Q5."
 total international aviation,energy_totals,1,tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-aviation; energy-carrier!=electricity,
 total international navigation,energy_totals,1,tra_energy-demand-bunkers-by-type-carrier[TWh],domestic-type=bunkers-marine; energy-carrier!=electricity,
 electricity,industry,1,ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=electricity,
@@ -53,9 +61,6 @@ low-temperature heat,industry,1,ind_energy-demand-by-carrier-feedstock[TWh],ener
 solid waste,industry,1,ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=solid-waste,"Fuel in kilns (cement, ceramics, lime). No such carrier in PyPSA-Eur: not supplied by the network, only its CO2 (x PatEx ind-combustion-emission-factor) is added to process emission at export."
 electricity base load,energy_totals,1,bld_energy-demand[TWh],energy-carrier=electricity,"Not a PyPSA-Eur column: target for the residual hourly electricity load once PyPSA has removed electric heating and today's industry electricity (appliances, lighting, cooling, cooking). Used to rescale n.loads_t.p_set per country at the end of prepare_sector_network."
 electricity base load,energy_totals,-1,bld_energy-demand[TWh],end-use=heating|hotwater; energy-carrier=electricity,"Electric space/water heating is served from PyPSA heat buses."
-electricity base load,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=rail; energy-carrier=electricity,"PyPSA-Eur has no separate rail load: rail electricity stays in the base load."
-electricity base load,energy_totals,1,tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=aviation|IWW; energy-carrier=electricity,"Electric aviation and inland navigation: no electric aviation/shipping load in PyPSA-Eur."
-electricity base load,energy_totals,1,tra_energy-demand-bunkers-by-type-carrier[TWh],energy-carrier=electricity,"Electric international aviation and shipping."
 process emission,industry,1,ind_emissions-by-material-by-type[MtCO2e],emission-type=process; material!=chemical-olefin,"Process emissions before capture (PyPSA decides capture). CO2e: small non-CO2 share. Ammonia includes the CO2 of its feedstock gas, see methane feedstock."
 process emission from feedstock,industry,1,ind_emissions-by-material-by-type[MtCO2e],emission-type=process; material=chemical-olefin,"Steam cracker CO2: in PyPSA-Eur a split of the naphtha carbon (process vs end of life), not added on top."
 _combustion emissions,ignore,1,ind_emissions-by-material-by-type[MtCO2e],emission-type=combustion,"PyPSA-Eur computes combustion CO2 from the fuels it supplies."

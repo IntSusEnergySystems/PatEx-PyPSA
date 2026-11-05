@@ -35,6 +35,14 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
   `industry.waste_to_energy: true` in `config.patex.yaml` (T23); `docs/`: data flow per
   sector (buildings, transport, industry, agriculture, energy).
 - 2026-11-04 Industry hydrogen split over nodes by gross uses (T22).
+- 2026-11-05 T15, behind `patex.enable`: `add_shipping` fuel shares per country from
+  PatEx, energy per fuel without conversion (config shares unchanged otherwise:
+  refactored to per-node shares, same loads); `add_gas_vehicles` (new, gas road on the gas
+  bus with CO2, ICE profile); `add_patex_transport_loads` (new: rail / aviation / shipping
+  electricity with the base-load shape, H2 for rail flat); PatEx-only columns split like
+  the related PyPSA-Eur column (`hydrogen road` now like `total road`, was population);
+  old bundles fail (re-export). PatEx configs: colours of the new carriers, no methanol
+  interactive map (empty without methanol ships). `docs/transport.md`, `energy.md`.
 - 2026-11-05 `docs/<sector>.md`: "Why" sections (settled reasons moved from
   `SOFTLINKING_PLAN.md`, incl. the chlor-alkali research in `industry.md`).
 
@@ -43,6 +51,16 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-05 — T15: one load per transport fuel
+
+- `data/extraction_rules.csv`: new `gas road`, `hydrogen rail`, `electricity aviation`,
+  `electricity navigation`, `hydrogen navigation`; rail, aviation and shipping electricity
+  out of `electricity base load`.
+- `data/sankey_nodes.csv`, `sankey_flows.csv`: Land transport gas, Rail electricity /
+  hydrogen, Aviation electricity, Shipping oil / hydrogen / electricity.
+- `transport.land_transport_scale`: any engine column (gas). Ledger script: the new loads.
+- `OPEN_QUESTIONS.md` Q14 (methanol / ammonia ships absent from PatEx), `MODEL_CHANGES.md`.
 
 ### 2026-11-05 — SOFTLINKING_PLAN.md → OPEN_QUESTIONS.md
 
