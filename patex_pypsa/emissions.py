@@ -112,58 +112,6 @@ def industry_factor(factors: pd.DataFrame, carrier: str) -> pd.Series:
     return f.set_index("Country")[FACTOR]
 
 
-#: PyPSA-Eur industry fuel → PatEx industry carrier
-INDUSTRY_FUELS = {
-    "gas": "gaseous-ff-natural",
-    "oil": "liquid-ff-oil",
-    "coal": "solid-ff-coal",
-    "solid waste": "solid-waste",
-}
-IND_ENERGY = "ind_energy-demand-by-carrier-feedstock-material[TWh]"
-IND_EMISSIONS = "ind_emissions-by-material-by-type[MtCO2e]"
-
-
-def industry_co2_intensity(
-    tables: dict[str, pd.DataFrame], factors: pd.DataFrame, horizon: int
-) -> pd.DataFrame:
-    """PatEx country × industry fuel → CO2 factor [tCO2/MWh] with PatEx's CRF calibration.
-
-    PatEx computes industry combustion CO2 as fuel × factor, then scales it per material
-    to the national inventories (CRF), keeping the rate of the last inventory year for
-    the future. Per material ``rate = PatEx combustion CO2 / Σ fuel × factor``; per fuel
-    ``calibrated factor = factor × Σ_m E_m × rate_m / Σ_m E_m``. Burning PatEx's fossil
-    fuels with these factors gives PatEx's combustion CO2 (CO2e, as PatEx reports it).
-    Materials without fossil fuel keep rate 1.
-    """
-    e = tables[IND_ENERGY]
-    e = e[(e["Years"] == horizon) & (e["feedstock-type"] == "excl-feedstock")]
-    f = factors.loc[factors["sector"] == "ind", ["Country", "energy-carrier", FACTOR]]
-    e = e.merge(f, on=["Country", "energy-carrier"], how="left")
-    # PatEx joins its factors on the carrier: a carrier without factor emits nothing;
-    # the fossil fuels and waste must have one
-    fossil = e["energy-carrier"].isin(INDUSTRY_FUELS.values())
-    missing = e[fossil & e[FACTOR].isna() & (e[IND_ENERGY] > 0)]
-    if not missing.empty:
-        raise ValueError(f"no PatEx industry CO2 factor for {sorted(missing['energy-carrier'].unique())}")
-    e["raw"] = e[IND_ENERGY] * e[FACTOR].fillna(0.0)
-    raw = e.groupby(["Country", "material"])["raw"].sum()
-
-    em = tables[IND_EMISSIONS]
-    em = em[(em["Years"] == horizon) & (em["emission-type"] == "combustion")]
-    combustion = em.groupby(["Country", "material"])[IND_EMISSIONS].sum()
-    rate = (combustion.reindex(raw.index) / raw.where(raw > 0)).fillna(1.0)
-    e["rate"] = rate.reindex(pd.MultiIndex.from_frame(e[["Country", "material"]])).to_numpy()
-
-    out = {}
-    for fuel, carrier in INDUSTRY_FUELS.items():
-        s = e[e["energy-carrier"] == carrier]
-        energy = s.groupby("Country")[IND_ENERGY].sum()
-        weighted = (s[IND_ENERGY] * s["rate"]).groupby(s["Country"]).sum()
-        base = industry_factor(factors, carrier)
-        out[fuel] = base * (weighted / energy.where(energy > 0)).reindex(base.index).fillna(1.0)
-    return pd.DataFrame(out).rename_axis("country")
-
-
 REFINERY_EMISSIONS = "clm_emissions-by-em-or-capt-module-sector[MtCO2e]"
 REFINERY_OUTPUT = "elc_net-energy-production-by-carrier-way-of-prod[TWh]"
 

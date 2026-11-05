@@ -7,6 +7,9 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-05 T27 reverted: no `scale_patex_industry_co2`, no industry intensity file; physical
+  factors; `docs/energy.md` explains why (CRF calibration not transferred). Test overlay
+  without cap at 24h (fast chain test).
 - 2026-11-05 T26/T27: `scale_patex_industry_co2` (industry CO2 ports per country with PatEx's
   CRF-calibrated factors); `oil_refining_emissions` from the bundle; rules pass
   `patex_industry_co2_intensity_{h}.csv`; `compose_network` skips the `oil refining` row;
@@ -63,6 +66,13 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-05 — T27 reverted: PatEx's CRF calibration not transferred
+
+- `emissions.industry_co2_intensity` and `patex_industry_co2_intensity_{h}.csv` removed;
+  solid waste CO2 back to PatEx's factor; ledger checks the fuel factors. PatEx calibrates
+  every sector on the inventory; its rates partly move emissions between sectors, which
+  PyPSA-Eur counts physically. Baseline consistency moves to T11.
 
 ### 2026-11-05 — T26, T27: refinery CO2 and CRF-calibrated industry CO2
 

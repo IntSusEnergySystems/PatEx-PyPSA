@@ -70,7 +70,10 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T9 Aviation (Q5)**: no PatEx BE domestic aviation vs 1.55 TWh in PyPSA-Eur. Is
   domestic aviation inside the bunkers? Same question for domestic maritime.
 - [ ] **T11 Scenario settings (plan step 5)**: CO₂ target (EU or national), nuclear,
-  CCS, import limits.
+  CCS, import limits. The relative cap's 1990 baseline is the inventory (CO2 only): make the
+  model's total comparable (fork `docs/energy.md`, T27 decision): carbon missing from the
+  physical count (steel coke ovens / blast-furnace gases, fugitive 1.B, refining of exported
+  products), PatEx's CO2e (process emissions) vs CO2-only baseline.
 
 ## Later
 
@@ -81,10 +84,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 ## Done
 
 - 2026-11-05 T26 Refinery CO2 per MWh of oil from PatEx (emissions / output), replaces
-  `oil_refining_emissions`. T27 Industry CO2 factors per country with PatEx's CRF
-  calibration (`patex_industry_co2_intensity_{h}.csv`, `scale_patex_industry_co2`); solid
-  waste CO2 calibrated too. Check: Σ fuel × factor = PatEx industry combustion CO2 per
-  country; BE test ledger 1.0000.
+  `oil_refining_emissions`. T27 PatEx's CRF calibration tried (industry factors per
+  country), then **not transferred**: physical factors everywhere, baseline consistency as a
+  total in T11 (reasons in the fork's `docs/energy.md`).
 - 2026-11-05 T24 Burnt industry oil gets combustion CO2: `naphtha` = liquid feedstock only,
   new `oil for industry` (burnt liquids) = load on the oil bus via a link with oil CO2;
   `methane feedstock` / `oil for industry` = 0 for fallback countries (would have doubled
