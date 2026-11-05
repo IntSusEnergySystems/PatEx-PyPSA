@@ -31,13 +31,15 @@ and, for the CO2 factors only, the dataset.
 | `ammonia`, `methanol`, `coke` = 0 | — | PatEx makes them from carriers already exported; PyPSA-Eur would make them again |
 | `process emission` | PatEx process emissions except olefins + solid-waste CO2 | before capture (PyPSA decides CCS); CO2e, small non-CO2 share |
 | `process emission from feedstock` | PatEx olefin process emissions | in PyPSA-Eur only a split of the naphtha carbon, not extra CO2 |
-| Solid waste in industry | energy × PatEx CO2 factor → process emission | no such fuel in PyPSA-Eur: not supplied by the network, only its CO2 kept |
+| Solid waste in industry | energy × PatEx CO2 factor (CRF-calibrated, T27) → process emission | no such fuel in PyPSA-Eur: not supplied by the network, only its CO2 kept |
 | `district heat share` (new) | district heat / building heat (final) | replaces PyPSA-Eur's today share + progress |
 | `number evs` (new) | cars and vans BEV + PHEV | sizes chargers, smart charging, V2G |
 | CO2 intensity of `gas`, `oil`, `coal` | PatEx combustion factors (ind, tra, agr, bld) weighted by PatEx fossil use per horizon | PyPSA-Eur counts combustion CO2 with PatEx's factors; values are computed from PatEx, not written in the config |
+| Industry CO2 factors per country (`patex_industry_co2_intensity_{h}.csv`, new, T27) | PatEx industry factors × PatEx's CRF calibration rates, weighted per fuel by its use per material | PatEx scales industry combustion CO2 to the inventories; PyPSA computes the CO2 with these factors and gets PatEx's industry combustion CO2 |
+| `oil refining` CO2 per MWh of oil (row of `patex_co2_intensity_{h}.csv`, new, T26) | PatEx refinery emissions (before capture) / refinery output, all run countries | emissions-per-unit parameter from PatEx, like the fuel factors; replaces `industry.oil_refining_emissions` |
 
 Not passed (on purpose): power-sector outputs `elc_*` (compared afterwards), fuel origin
-(fossil/bio/syn), refineries, heating technologies, district heating network losses
+(fossil/bio/syn), refinery throughput (only its CO2 per MWh), heating technologies, district heating network losses
 (PyPSA-Eur adds its own, `district_heating_loss`, T19). Not passed by gap: non-electric
 cooking (exported, but PyPSA-Eur has no load for it, T18).
 
@@ -53,7 +55,10 @@ unchanged (upstream test objective within solver tolerance).
 | `rules/compose.smk`, `rules/build_sector.smk` | PatEx inputs wired when enabled | |
 | `build_industrial_energy_demand_per_node.py` | industry carriers and process emissions per country from PatEx; hydrogen split over nodes by gross uses | the chlorine by-product (negative in PyPSA-Eur's ratios, absent from PatEx) flipped the split's signs |
 | `build_district_heat_share.py` | country share from PatEx, spread like today's share | PatEx sets district heating per horizon |
-| `compose_network.py` | CO2 intensity of gas, oil, coal from the bundle | same CO2 per fuel as PatEx |
+| `compose_network.py` | CO2 intensity of gas, oil, coal from the bundle (the `oil refining` row is skipped) | same CO2 per fuel as PatEx |
+| `prepare_sector_network.main` | `industry.oil_refining_emissions` from the bundle (T26); error if the row is missing | refinery CO2 per MWh from PatEx |
+| `prepare_sector_network.scale_patex_industry_co2` (new, T27) | CO2 ports of `gas for industry` (+ CC), `coal for industry`, `oil for industry` scaled to the country's CRF-calibrated factor; EU links: demand-weighted mean | PatEx's industry combustion CO2 methodology |
+| `rules/patex.smk`, `rules/compose.smk`, `build_patex_demands.py` | copy and pass `patex_industry_co2_intensity_{h}.csv` | |
 | `prepare_sector_network.main` | energy totals per country from PatEx (heat, agriculture, aviation, navigation); base load rescaled at the end | |
 | `prepare_sector_network.add_land_transport` | EV, fuel-cell, gas and oil loads = PyPSA-Eur hourly profile × PatEx energy per fuel; EV fleet from PatEx | PyPSA-Eur builds road demand once from 2023 energy as a distance; PatEx gives future energy per fuel |
 | `prepare_sector_network.add_EVs` | optional `number_evs` sizes chargers / DSM / V2G | instead of share × today's cars |

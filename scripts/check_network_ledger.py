@@ -226,9 +226,21 @@ print(table.round({"network": 3, "patex": 3, "ratio": 4}).to_string(index=False)
 
 # CO2 intensity of the links burning each fuel
 co2 = pd.read_csv(inputs / f"patex_co2_intensity_{args.horizon}.csv", index_col=0)["CO2 intensity"]
-fuel_links = {"gas": "gas for industry", "oil": "land transport oil", "coal": "coal for industry"}
 print("\nCO2 intensity [tCO2/MWh]: carrier, link checked, network, PatEx")
-for carrier, link in fuel_links.items():
+for carrier, link in {"gas": "land transport gas", "oil": "land transport oil"}.items():
     eff = n.links.loc[n.links.carrier == link, "efficiency2"]
     if len(eff):
         print(f"  {carrier:5s} {link:20s} {eff.mean():.6f} {co2[carrier]:.6f}")
+refining = n.links.loc[n.links.carrier == "oil refining", "efficiency2"]
+if len(refining) and "oil refining" in co2:
+    print(f"  oil   oil refining         {refining.mean():.6f} {co2['oil refining']:.6f}  (per MWh oil)")
+
+# industry fuels: PatEx factors with its CRF calibration, per country
+industry_co2 = pd.read_csv(inputs / f"patex_industry_co2_intensity_{args.horizon}.csv", index_col=0)
+print("\nIndustry CO2 intensity (CRF-calibrated) [tCO2/MWh]: fuel, link, country, network, PatEx")
+for carrier, link in {"gas": "gas for industry", "oil": "oil for industry", "coal": "coal for industry"}.items():
+    links = n.links[n.links.carrier == link]
+    location = links.bus1.map(n.buses.location)
+    for loc, eff in links.efficiency2.groupby(location.str[:2]):
+        patex = industry_co2[carrier].get(loc, float("nan"))
+        print(f"  {carrier:5s} {link:20s} {loc:3s} {eff.mean():.6f} {patex:.6f}")

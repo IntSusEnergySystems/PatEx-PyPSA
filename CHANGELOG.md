@@ -7,6 +7,10 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-05 T26/T27: `scale_patex_industry_co2` (industry CO2 ports per country with PatEx's
+  CRF-calibrated factors); `oil_refining_emissions` from the bundle; rules pass
+  `patex_industry_co2_intensity_{h}.csv`; `compose_network` skips the `oil refining` row;
+  `docs/energy.md` (calibration, refineries), `docs/README.md`.
 - 2026-11-05 T24: `oil for industry` load (burnt industry liquids, oil CO2) in
   `add_industry`; `build_industrial_energy_demand_per_node` requires the column and sets the
   PatEx-only columns (`methane feedstock`, `oil for industry`) to 0 for fallback countries;
@@ -59,6 +63,16 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-05 — T26, T27: refinery CO2 and CRF-calibrated industry CO2
+
+- `emissions.industry_co2_intensity`: per country and fuel, PatEx's industry factor ×
+  its CRF calibration rates (per material, weighted by the fuel's use) →
+  `patex_industry_co2_intensity_{h}.csv`; solid waste CO2 calibrated the same way.
+- `emissions.refinery_co2_intensity`: refinery emissions before capture / refinery output
+  → row `oil refining` of `patex_co2_intensity_{h}.csv`.
+- Ledger: refinery and per-country industry factors; tests (calibration reproduces
+  PatEx's combustion CO2).
 
 ### 2026-11-05 — T24: burnt industry oil with CO2
 

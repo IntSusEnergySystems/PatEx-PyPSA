@@ -9,7 +9,8 @@ Layout (mirrors TIMES_PyPSA's ``<coupling_dir>``)::
         ├── patex_energy_totals_{h}.csv    # country × energy_totals columns [TWh/a]
         ├── patex_industry_{h}.csv         # country × industrial demand columns [TWh/a, MtCO2/a]
         ├── patex_parameters_{h}.csv       # country × district heat share [-], number evs
-        ├── patex_co2_intensity_{h}.csv    # PyPSA-Eur carrier → CO2 intensity [tCO2/MWh]
+        ├── patex_co2_intensity_{h}.csv    # PyPSA-Eur carrier → CO2 intensity [tCO2/MWh], + oil refining
+        ├── patex_industry_co2_intensity_{h}.csv  # country × industry fuel, CRF-calibrated [tCO2/MWh]
         ├── patex_co2_factors.csv          # PatEx factors used (sector, fuel) [tCO2/MWh]
         ├── patex_demands_long.csv         # every horizon, long format, for QA
         ├── sankey_flows.csv               # fuel → sector → PyPSA-Eur input [TWh], for the report
@@ -30,7 +31,12 @@ import pandas as pd
 
 from . import __version__
 from .agriculture import split_agriculture
-from .emissions import co2_intensity, fossil_energy, industry_factor
+from .emissions import (
+    co2_intensity,
+    fossil_energy,
+    industry_co2_intensity,
+    refinery_co2_intensity,
+)
 from .indicators import INDICATORS_FILE, indicator_series, load_definitions
 from .sankey import SANKEY_FLOWS_FILE, SANKEY_NODES_FILE, load_flow_rules, sankey_flows
 from .extraction import coverage, extract, load_rules
@@ -206,19 +212,25 @@ def export_coupling_dir(
         from .emissions import load_co2_factors
 
         co2_factors = load_co2_factors(dataset, sorted(tables[rules[0].variable]["Country"].unique()))
-    waste_factor = None
     if co2_factors is not None:
         co2_factors.to_csv(out_dir / "patex_co2_factors.csv", index=False, float_format="%.6f")
-        waste_factor = industry_factor(co2_factors, "solid-waste").rename(country_map)
         energy = fossil_energy(tables)
 
     for h in horizons:
+        waste_factor = None
+        if co2_factors is not None:
+            # industry fuels with PatEx's CRF calibration (solid waste: CO2 added to the
+            # process emissions below)
+            industry_co2 = industry_co2_intensity(tables, co2_factors, h).rename(country_map)
+            waste_factor = industry_co2.pop("solid waste")
+            industry_co2.sort_index().to_csv(
+                out_dir / f"patex_industry_co2_intensity_{h}.csv", float_format="%.6f"
+            )
+            intensity = co2_intensity(energy, co2_factors, h)
+            intensity["oil refining"] = refinery_co2_intensity(tables, h)
+            intensity.to_csv(out_dir / f"patex_co2_intensity_{h}.csv", float_format="%.6f")
         for target, wide in horizon_tables(long, h, waste_factor).items():
             wide.to_csv(out_dir / f"{TARGET_FILES[target]}_{h}.csv", float_format="%.6f")
-        if co2_factors is not None:
-            co2_intensity(energy, co2_factors, h).to_csv(
-                out_dir / f"patex_co2_intensity_{h}.csv", float_format="%.6f"
-            )
 
     manifest = {
         "patex_pypsa_version": __version__,

@@ -216,7 +216,10 @@ def test_canonical_rules_on_synthetic_run(tmp_path):
     ind = pd.read_csv(out / "patex_industry_2030.csv", index_col=0)
     assert {"process emission", "methane feedstock", "oil for industry"} <= set(ind.columns)
     ci = pd.read_csv(out / "patex_co2_intensity_2030.csv", index_col=0)["CO2 intensity"]
-    assert ci.to_dict() == pytest.approx({"gas": 0.3, "oil": 0.3, "coal": 0.3})
+    assert ci.drop("oil refining").to_dict() == pytest.approx({"gas": 0.3, "oil": 0.3, "coal": 0.3})
+    assert ci["oil refining"] > 0
+    ici = pd.read_csv(out / "patex_industry_co2_intensity_2030.csv", index_col=0)
+    assert list(ici.columns) == ["gas", "oil", "coal"] and (ici > 0).all().all()
     with pytest.raises(ValueError, match="horizon 2033"):
         export_coupling_dir(tmp_path, SYNTHETIC_RUN, [2033], allow_negative=True)
 
@@ -320,3 +323,42 @@ def test_report_pages_from_synthetic_bundle(tmp_path):
     out = write_report(tmp_path)
     assert (out / "sankey_2030.html").exists() and (out / "indicators_catalogue.html").exists()
     assert "PX_DATA" in (out / "indicators_energy.html").read_text()
+
+
+def test_industry_co2_intensity_reproduces_patex_combustion():
+    from patex_pypsa.emissions import IND_EMISSIONS, IND_ENERGY, industry_co2_intensity
+
+    energy = pd.DataFrame(
+        [
+            ("BE", 2030, "excl-feedstock", "steel", "solid-ff-coal", 10.0),
+            ("BE", 2030, "excl-feedstock", "steel", "gaseous-ff-natural", 5.0),
+            ("BE", 2030, "excl-feedstock", "food", "gaseous-ff-natural", 20.0),
+            ("BE", 2030, "excl-feedstock", "food", "gaseous-bio", 3.0),
+            ("BE", 2030, "feedstock", "chemical-ammonia", "gaseous-ff-natural", 8.0),
+            ("BE", 2030, "excl-feedstock", "cement", "solid-waste", 2.0),
+        ],
+        columns=["Country", "Years", "feedstock-type", "material", "energy-carrier", IND_ENERGY],
+    )
+    emissions = pd.DataFrame(
+        [
+            ("BE", 2030, "steel", "combustion", 6.0),
+            ("BE", 2030, "food", "combustion", 3.6),
+            ("BE", 2030, "cement", "combustion", 0.8),
+            ("BE", 2030, "chemical-ammonia", "process", 1.6),
+        ],
+        columns=["Country", "Years", "material", "emission-type", IND_EMISSIONS],
+    )
+    factors = pd.DataFrame(
+        [("BE", "ind", c, f) for c, f in [("solid-ff-coal", 0.35), ("gaseous-ff-natural", 0.2),
+                                           ("liquid-ff-oil", 0.26), ("solid-waste", 0.4)]],
+        columns=["Country", "sector", "energy-carrier", "tCO2/MWh"],
+    )
+    tables = {IND_ENERGY: energy, IND_EMISSIONS: emissions}
+    ci = industry_co2_intensity(tables, factors, 2030).loc["BE"]
+    # steel rate 6 / (3.5 + 1) = 4/3; food 3.6 / 4 = 0.9; cement 0.8 / 0.8 = 1
+    assert ci["coal"] == pytest.approx(0.35 * 4 / 3)
+    assert ci["gas"] == pytest.approx(0.2 * (5 * 4 / 3 + 20 * 0.9) / 25)
+    assert ci["solid waste"] == pytest.approx(0.4)
+    assert ci["oil"] == pytest.approx(0.26)  # unused: raw factor
+    burnt = 10 * ci["coal"] + 25 * ci["gas"] + 2 * ci["solid waste"]
+    assert burnt == pytest.approx(6.0 + 3.6 + 0.8)  # feedstock gas and biogas add nothing

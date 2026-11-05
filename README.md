@@ -122,7 +122,8 @@ Output in `<coupling_dir>/pypsa_inputs/`:
 | `patex_energy_totals_{h}.csv` | country × PyPSA-Eur `energy_totals` columns (+ `electricity base load`), TWh/a |
 | `patex_industry_{h}.csv` | country × `industrial_energy_demand` columns, TWh/a (process emissions MtCO2e/a) |
 | `patex_parameters_{h}.csv` | country × `district heat share` [-], `number evs` |
-| `patex_co2_intensity_{h}.csv` | `gas`, `oil`, `coal` → CO2 intensity [tCO2/MWh] |
+| `patex_co2_intensity_{h}.csv` | `gas`, `oil`, `coal` → CO2 intensity [tCO2/MWh]; `oil refining` → refinery CO2 per MWh of oil products |
+| `patex_industry_co2_intensity_{h}.csv` | country × industry `gas`, `oil`, `coal` → CO2 factor with PatEx's CRF calibration [tCO2/MWh] |
 | `patex_co2_factors.csv` | PatEx CO2 factors used (country, sector, fuel) |
 | `patex_demands_long.csv` | every year, long format, for QA and plots |
 | `coverage.csv` | PatEx energy that no rule exports or ignores (must be empty) |

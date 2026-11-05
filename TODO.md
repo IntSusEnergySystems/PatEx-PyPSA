@@ -12,12 +12,6 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
   on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
   SSH key `id_ed25519` authenticates.
-- [ ] **T26 Refinery CO2**: `oil refining` uses PyPSA-Eur's `oil_refining_emissions`
-  (0.013 t/MWh oil); PatEx reports refinery emissions. Option: factor from PatEx
-  (refinery emissions / oil throughput) at export, like the fuel factors.
-- [ ] **T27 PatEx combustion calibration**: PatEx scales industry combustion emissions to the
-  CRF inventories (rates per material, in FINDINGS); PyPSA-Eur uses the raw
-  factors. Decide whether the industry factors should carry PatEx's calibration.
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE).
@@ -86,6 +80,11 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Done
 
+- 2026-11-05 T26 Refinery CO2 per MWh of oil from PatEx (emissions / output), replaces
+  `oil_refining_emissions`. T27 Industry CO2 factors per country with PatEx's CRF
+  calibration (`patex_industry_co2_intensity_{h}.csv`, `scale_patex_industry_co2`); solid
+  waste CO2 calibrated too. Check: Σ fuel × factor = PatEx industry combustion CO2 per
+  country; BE test ledger 1.0000.
 - 2026-11-05 T24 Burnt industry oil gets combustion CO2: `naphtha` = liquid feedstock only,
   new `oil for industry` (burnt liquids) = load on the oil bus via a link with oil CO2;
   `methane feedstock` / `oil for industry` = 0 for fallback countries (would have doubled
