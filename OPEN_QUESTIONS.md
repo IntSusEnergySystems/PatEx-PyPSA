@@ -47,10 +47,15 @@ the sector doc and deleting it here.
 
 ## For CAN
 
-- **Q16 Scenario settings (T11).** CO2 target (EU or national, or PatEx's own emission
-  trajectory per country), nuclear, CCS, import limits. The scope of PyPSA-Eur's CO2 budget
-  differs from PatEx's (refineries, plastics end of life, bunkers); a strict cap on a few
-  countries can be infeasible (BE-LU-NL 2030, T20).
+- **Q16 Scenario settings (T11, T28–T34).** CO2 target (EU or national, or PatEx's own
+  emission trajectory per country), nuclear (closure dates per country, lifetime extensions
+  such as Doel 4 / Tihange 3 to 2035 and Borssele, no new build?), CCS (fossil CCS allowed?),
+  import limits (electricity and per fuel), cross-border capacities (TYNDP?). The relative
+  cap's 1990 baseline is the CO2-only inventory; the model counts physical carbon (no CRF
+  calibration, see the fork's `docs/energy.md`), so the scope differs on refining of
+  exported products, steel coke ovens / blast-furnace gases, fugitive emissions, PatEx's
+  CO2e process emissions, plastics end of life, bunkers. A strict cap on a few countries
+  can be infeasible (BE-LU-NL 2030, T20).
 
 ## Ours
 
