@@ -19,10 +19,6 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   2030: all HVC to `HVC to air`, waste CHPs unused). Fix (follows the CO2 rule): split
   `naphtha` (feedstock liquids) / new `oil for industry` (excl-feedstock liquids), a load on
   the oil bus through a link with oil CO2, like `gas for industry`; Sankey, ledger, docs.
-- [ ] **T25 Plastics burned at end of life**: waste CHPs are optional and `HVC to air` is
-  free and emits nothing, so under a cap the model never burns plastics; PatEx has waste
-  incineration emissions in power/heat. Decide: force the burned share (PatEx) through
-  waste CHPs, or accept.
 - [ ] **T26 Refinery CO2**: `oil refining` uses PyPSA-Eur's `oil_refining_emissions`
   (0.013 t/MWh oil); PatEx reports refinery emissions. Option: factor from PatEx
   (refinery emissions / oil throughput) at export, like the fuel factors.
