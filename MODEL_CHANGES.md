@@ -27,6 +27,7 @@ and, for the CO2 factors only, the dataset.
 | `electricity aviation`, `electricity navigation`, `hydrogen navigation` (new) | domestic + bunkers by carrier | own loads; hydrogen share of shipping per country (PatEx has no methanol or ammonia ships, Q14) |
 | Industry carriers | `ind_energy-demand-by-carrier-feedstock` | PatEx `solid-ff-coal` includes coke |
 | `methane feedstock` (new) | feedstock gas (ammonia, olefins) | not burnt: no combustion CO2; its released CO2 is in PatEx process emissions |
+| `naphtha` / `oil for industry` (new, T24) | industry liquids: feedstock / burnt | feedstock feeds the plastics chain; burnt oil gets combustion CO2 (was lost in the plastics chain) |
 | `ammonia`, `methanol`, `coke` = 0 | — | PatEx makes them from carriers already exported; PyPSA-Eur would make them again |
 | `process emission` | PatEx process emissions except olefins + solid-waste CO2 | before capture (PyPSA decides CCS); CO2e, small non-CO2 share |
 | `process emission from feedstock` | PatEx olefin process emissions | in PyPSA-Eur only a split of the naphtha carbon, not extra CO2 |
@@ -61,6 +62,8 @@ unchanged (upstream test objective within solver tolerance).
 | `prepare_sector_network.add_gas_vehicles` (new) | `land transport gas` load per node, ICE profile, from the gas bus with CO2 | PyPSA-Eur has no gas vehicles |
 | `prepare_sector_network.add_patex_transport_loads` (new) | loads `rail electricity`, `aviation electricity`, `shipping electricity` (base-load shape, transmission bus), `H2 for rail` (flat) | PyPSA-Eur has no such loads; each fuel visible in its own load |
 | `prepare_sector_network.add_industry` | load `gas feedstock for industry` on the gas bus, no CO2 | see `methane feedstock` |
+| `prepare_sector_network.add_industry` | load `oil for industry` + link from the oil bus with oil CO2 (T24) | see `oil for industry` |
+| `build_industrial_energy_demand_per_node.py` | `methane feedstock`, `oil for industry` = 0 for fallback countries; error if the bundle has no `oil for industry` | the copied PyPSA-Eur values would double their gas and naphtha |
 | `prepare_sector_network.add_industry`, `patex.plastics_eol_co2` (false) + `industry.waste_to_energy: true` | `HVC to air` emits nothing; waste CHPs burn non-recycled plastics with their CO2 | PatEx / inventory convention: plastics carbon is emitted only where waste is burned |
 | `rules/patex.smk` (`build_patex_report`) | HTML Sankey + PatEx indicators into `results/<run>/patex_report/` (not in `all`) | visual check of the PatEx side, as `build_times_sankey` in pypsa-wal |
 | `config/config.patex.yaml`, `config/test/config.patex.yaml` | run configs: `reduce_space_heat_exogenously: false`, machinery shares 0 / 1, plot colour | PatEx demand already includes renovation and machinery electrification |

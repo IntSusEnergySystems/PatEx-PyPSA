@@ -32,7 +32,8 @@ ind_energy-demand-by-carrier-feedstock[TWh],feedstock-type=feedstock; energy-car
 ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=hydrogen,,Industry ({feedstock-type}),Industry hydrogen,
 ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=solid-biomass,,Industry ({feedstock-type}),Industry solid biomass,
 ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=solid-ff-coal,,Industry ({feedstock-type}),Industry coal,
-ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=liquid-ff-oil|liquid-bio|liquid-syn,,Industry ({feedstock-type}),Industry naphtha,"All industry liquids, burnt and feedstock (T8)."
+ind_energy-demand-by-carrier-feedstock[TWh],feedstock-type=excl-feedstock; energy-carrier=liquid-ff-oil|liquid-bio|liquid-syn,,Industry ({feedstock-type}),Industry oil,"Burnt liquids, combustion CO2 (T24)."
+ind_energy-demand-by-carrier-feedstock[TWh],feedstock-type=feedstock; energy-carrier=liquid-ff-oil|liquid-bio|liquid-syn,,Industry ({feedstock-type}),Industry naphtha,"Liquid feedstock: plastics chain (T8)."
 ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=heat,,Industry ({feedstock-type}),Industry low-temperature heat,
 ind_energy-demand-by-carrier-feedstock[TWh],energy-carrier=solid-waste,,Industry ({feedstock-type}),Not supplied (CO2 only),"No such fuel in PyPSA-Eur: its CO2 is added to the process emissions."
 agr_energy-demand-by-vector[TWh],,,Agriculture,agriculture split,"Split into Agriculture electricity / heat / machinery with the JRC-IDEES shares (agriculture.py)."

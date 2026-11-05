@@ -91,6 +91,7 @@ CHECKS = {
         "process emission",
         "MtCO2/a, incl. solid waste CO2",
     ),
+    "industry oil": (["oil for industry"], "industry", "oil for industry", "burnt, with CO2"),
     "industry solid biomass": (["solid biomass for industry"], "industry", "solid biomass", ""),
     "industry coal": (["coal for industry"], "industry", "coal + coke", ""),
     "industry low-temperature heat": (

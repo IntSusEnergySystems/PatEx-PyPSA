@@ -12,13 +12,6 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
   on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
   SSH key `id_ed25519` authenticates.
-- [ ] **T24 Burnt industry oil has no CO2** (found 2026-11-05): the `naphtha` column holds
-  every industry liquid, feedstock and burnt (olefin cracker fuel, other industries). In
-  PyPSA-Eur all of it enters the plastics (HVC) chain; with `plastics_eol_co2: false` the
-  non-burned plastics emit nothing, so the CO2 of the burnt oil is lost (BE-LU-NL test
-  2030: all HVC to `HVC to air`, waste CHPs unused). Fix (follows the CO2 rule): split
-  `naphtha` (feedstock liquids) / new `oil for industry` (excl-feedstock liquids), a load on
-  the oil bus through a link with oil CO2, like `gas for industry`; Sankey, ledger, docs.
 - [ ] **T26 Refinery CO2**: `oil refining` uses PyPSA-Eur's `oil_refining_emissions`
   (0.013 t/MWh oil); PatEx reports refinery emissions. Option: factor from PatEx
   (refinery emissions / oil throughput) at export, like the fuel factors.
@@ -93,6 +86,10 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Done
 
+- 2026-11-05 T24 Burnt industry oil gets combustion CO2: `naphtha` = liquid feedstock only,
+  new `oil for industry` (burnt liquids) = load on the oil bus via a link with oil CO2;
+  `methane feedstock` / `oil for industry` = 0 for fallback countries (would have doubled
+  their gas / naphtha). BE test ledger 1.0000 (fork, PATEX_PyPSA, pypsa2html mapping).
 - 2026-11-05 T15 Every PatEx transport fuel has its own load: shipping fuel split from
   PatEx (energy per fuel, no PyPSA-Eur shares or efficiencies; methanol 0 since PatEx has
   none, Q14), gas road (`land transport gas`, gas bus with CO2), hydrogen rail, rail /

@@ -214,7 +214,7 @@ def test_canonical_rules_on_synthetic_run(tmp_path):
     et = pd.read_csv(out / "patex_energy_totals_2030.csv", index_col=0)
     assert {"total road", "electricity residential", "total residential space"} <= set(et.columns)
     ind = pd.read_csv(out / "patex_industry_2030.csv", index_col=0)
-    assert {"process emission", "methane feedstock"} <= set(ind.columns)
+    assert {"process emission", "methane feedstock", "oil for industry"} <= set(ind.columns)
     ci = pd.read_csv(out / "patex_co2_intensity_2030.csv", index_col=0)["CO2 intensity"]
     assert ci.to_dict() == pytest.approx({"gas": 0.3, "oil": 0.3, "coal": 0.3})
     with pytest.raises(ValueError, match="horizon 2033"):

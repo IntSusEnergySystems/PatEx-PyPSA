@@ -19,6 +19,7 @@ Industry gas feedstock (no CO2),industry,industry,methane feedstock
 Industry hydrogen,industry,industry,hydrogen
 Industry solid biomass,industry,industry,solid biomass
 Industry coal,industry,industry,coal + coke
+Industry oil,industry,industry,oil for industry
 Industry naphtha,industry,industry,naphtha
 Industry low-temperature heat,industry,industry,low-temperature heat
 Agriculture electricity,agriculture,energy_totals,total agriculture electricity

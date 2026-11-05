@@ -7,6 +7,10 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-05 T24: `oil for industry` load (burnt industry liquids, oil CO2) in
+  `add_industry`; `build_industrial_energy_demand_per_node` requires the column and sets the
+  PatEx-only columns (`methane feedstock`, `oil for industry`) to 0 for fallback countries;
+  plot colour; `docs/industry.md`.
 - 2026-11-05 `docs/energy.md`, `docs/README.md`: CO2 accounting rule (process emissions from
   PatEx, every other emission computed by PyPSA-Eur with PatEx's fuel factors).
 - 2026-11-05 BE-LU-NL overlays: solve `mem_mb` 25000, Gurobi 16 threads (measured on nic6);
@@ -55,6 +59,13 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-05 — T24: burnt industry oil with CO2
+
+- `data/extraction_rules.csv`: `naphtha` = liquid feedstock only; new `oil for industry` =
+  burnt liquids. Sankey node `Industry oil`; ledger check `industry oil`; test.
+- Found by the CO2 accounting check (T24–T27): the CO2 of oil burnt in industry was lost in
+  PyPSA-Eur's plastics chain.
 
 ### 2026-11-05 — T15: one load per transport fuel
 
