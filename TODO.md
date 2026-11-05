@@ -12,6 +12,23 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
   on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
   SSH key `id_ed25519` authenticates.
+- [ ] **T24 Burnt industry oil has no CO2** (found 2026-11-05): the `naphtha` column holds
+  every industry liquid, feedstock and burnt (olefin cracker fuel, other industries). In
+  PyPSA-Eur all of it enters the plastics (HVC) chain; with `plastics_eol_co2: false` the
+  non-burned plastics emit nothing, so the CO2 of the burnt oil is lost (BE-LU-NL test
+  2030: all HVC to `HVC to air`, waste CHPs unused). Fix (follows the CO2 rule): split
+  `naphtha` (feedstock liquids) / new `oil for industry` (excl-feedstock liquids), a load on
+  the oil bus through a link with oil CO2, like `gas for industry`; Sankey, ledger, docs.
+- [ ] **T25 Plastics burned at end of life**: waste CHPs are optional and `HVC to air` is
+  free and emits nothing, so under a cap the model never burns plastics; PatEx has waste
+  incineration emissions in power/heat. Decide: force the burned share (PatEx) through
+  waste CHPs, or accept.
+- [ ] **T26 Refinery CO2**: `oil refining` uses PyPSA-Eur's `oil_refining_emissions`
+  (0.013 t/MWh oil); PatEx reports refinery emissions. Option: factor from PatEx
+  (refinery emissions / oil throughput) at export, like the fuel factors.
+- [ ] **T27 PatEx combustion calibration**: PatEx scales industry combustion emissions to the
+  CRF inventories (rates per material, in FINDINGS); PyPSA-Eur uses the raw
+  factors. Decide whether the industry factors should carry PatEx's calibration.
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE).
@@ -48,8 +65,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
   our config generator, the graph now balances. **Since T15** the electricity node is off by
   the new loads (`rail electricity`, `aviation electricity`, `shipping electricity`, plus
   `H2 for rail`, `land transport gas`), missing from `data/carrier_flows_energy.csv`;
-  `_rail_demand` (rail from energy totals) becomes redundant. Fix waits for Julien's go
-  (pypsa2html).
+  `_rail_demand` (rail from energy totals) becomes redundant. Fixed 2026-11-05
+  (pypsa2html `76467b0`): carriers mapped, no rail estimate when the network has a rail
+  load; BE-LU-NL Sankey balances again.
 
 - [ ] **T23 Plastics end-of-life CO2** — PatEx convention applied (user, 2026-11-04,
   fork `fcfd51a8`): `patex.plastics_eol_co2: false` (HVC to air emits nothing),
