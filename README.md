@@ -45,6 +45,7 @@ PATEX2PYPSA/
 │   ├── scripts/run_coupled.sh    # PatEx run → export → (snakemake)
 │   ├── scripts/check_agriculture_split.py  # base-year check vs JRC-IDEES
 │   ├── scripts/check_network_ledger.py     # composed network loads vs bundle
+│   ├── scripts/co2_by_sector.py            # CO2 per country and sector, bio credits on consumers
 │   └── tests/
 ├── private_notes/                # outside git: PatEx figures (FINDINGS.md), session handover
 └── runs/<scenario>/              # one coupling bundle per scenario (created by runs, outside git)

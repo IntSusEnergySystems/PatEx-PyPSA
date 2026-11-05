@@ -69,6 +69,11 @@ Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
 
+### 2026-11-05 — T35: CO2 per sector with bio credits on consumers
+
+- `scripts/co2_by_sector.py` (+ test): per country and sector, gross / bio credit / net;
+  the bio credit of the gas, oil and methanol pools goes to their consumers (mass balance).
+
 ### 2026-11-05 — T27 reverted: PatEx's CRF calibration not transferred
 
 - `emissions.industry_co2_intensity` and `patex_industry_co2_intensity_{h}.csv` removed;

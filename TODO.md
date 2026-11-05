@@ -21,7 +21,8 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
 - [ ] **T28 National CO2 caps** (with T11), keeping the EU cap as an option: per-country
   cap on the CO2 of the links located in the country (PyPSA-Wal `add_co2limit_country`).
   Trap: carriers on EU-level buses (oil, methanol, kerosene, shipping, naphtha) carry their
-  bio / synthetic credit at EU level, so a national cap charges the fossil CO2 without the
+  bio / synthetic credit at EU level; decide where the bio credit is booked (production:
+  linear; consumption: non-linear, T35 does it only in reporting), so a national cap charges the fossil CO2 without the
   credit (PyPSA-Wal excluded aviation). Data: national targets (CAN) or PatEx trajectory.
 - [ ] **T30 Cross-border capacity limits** per border (NTC ceilings, grid expansion up to
   them; PyPSA-Wal `set_NTCs.py`). Data: ENTSO-E TYNDP 2024 for every border.
@@ -45,14 +46,6 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
     each hour, which underestimates the flexibility needs);
   - new build only where / when allowed per node and horizon (none in PAC 2.0: confirm
     with CAN), nuclear as Links only (no Generator duplicate), no 10 MW threshold drop.
-- [ ] (proposal) **T35 Bio / synthetic credits attributed to the consumers** (reporting):
-  gas, oil and methanol are pooled, so a sector burning them shows fossil CO2 and the
-  credit sits on the production line (`biogas to gas`, bioliquids, Fischer-Tropsch,
-  methanation). Mass-balance attribution after the solve: each consumer's CO2 = its use ×
-  fossil share of its pool × factor; totals unchanged. In pypsa2html (sector pages) and our
-  summaries. For national caps (T28) decide how credits are booked (where produced vs
-  where consumed: the latter is non-linear in the optimisation).
-
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE).
@@ -124,6 +117,8 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
 
 ## Done
 
+- 2026-11-05 T35 `scripts/co2_by_sector.py`: CO2 per country and sector, bio credits moved to
+  the consumers of the gas / oil / methanol pools (mass balance, total checked); test.
 - 2026-11-05 Gas storage = working gas (upstream reads the cushion gas: BE 15x too small,
   NL 4x too large), no 98 % clip (PatEx runs only). BE test: Loenhout 8.2 TWh.
 - 2026-11-05 T26 Refinery CO2 per MWh of oil from PatEx (emissions / output), replaces
