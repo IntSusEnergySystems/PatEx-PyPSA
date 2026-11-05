@@ -10,9 +10,10 @@ charge of **how it is served**: capacities, flexibility, imports, grids and cost
 supply outputs (power capacities, imports, ...) are not imposed. They are used only to
 compare results.
 
-See [SOFTLINKING_PLAN.md](SOFTLINKING_PLAN.md) for the architecture, the steps and the
-open questions, and [MODEL_CHANGES.md](MODEL_CHANGES.md) for what is passed and what was
-changed in each model, with the reasons.
+See [MODEL_CHANGES.md](MODEL_CHANGES.md) for what is passed and what was changed in each
+model, the fork's `docs/<sector>.md` for the data flow and the reasons per sector,
+[OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) for what is still open (`Qn`) and
+[TODO.md](TODO.md) for the work items (`Tn`).
 
 ## Layout
 
@@ -39,7 +40,7 @@ PATEX2PYPSA/
 │   │   ├── sankey_nodes.csv      # PyPSA-Eur nodes and the bundle columns they must equal
 │   │   └── indicators.csv        # indicator charts (variable, filters, split)
 │   ├── MODEL_CHANGES.md          # what is passed / changed in each model, and why
-│   ├── SOFTLINKING_PLAN.md       # design, data checks, open questions Qn
+│   ├── OPEN_QUESTIONS.md         # open questions Qn (Climact, CAN, ours)
 │   ├── TODO.md, CHANGELOG.md
 │   ├── scripts/run_coupled.sh    # PatEx run → export → (snakemake)
 │   ├── scripts/check_agriculture_split.py  # base-year check vs JRC-IDEES
@@ -68,9 +69,12 @@ cd ../../PyPSA-Eur-CANEU && uv pip install --python .pixi/envs/default/bin/pytho
 
 ```bash
 # 1. Run PatEx (real dataset needed for meaningful values; xx.pkl = synthetic test run)
+#    every country PyPSA-Eur models that PatEx has: EU27 minus CY, MT (Greece = EL)
 cd ../../patex
-uv run patex run "AT|BE|DE|..." --dataset data/<version> --levers-file pac2.json \
-    -o ../PATEX2PYPSA/runs/pac2/patex/run.pkl
+uv run patex run "AT|BE|BG|CZ|DE|DK|EE|ES|FI|FR|EL|HR|HU|IE|IT|LT|LU|LV|NL|PL|PT|RO|SE|SI|SK" \
+    --dataset "s3://climact-dataset/patex/47.x.4?region=eu-central-1" \
+    --levers-file ../PATEX2PYPSA/runs/pac2/patex/levers.json \
+    -o ../PATEX2PYPSA/runs/pac2/patex/run.pkl          # runs/levers2: --levers-default 2
 
 # 2. Look at what a run contains
 uv run patex-pypsa inspect --pkl ../PATEX2PYPSA/runs/pac2/patex/run.pkl --grep energy-demand
@@ -82,6 +86,11 @@ uv run patex-pypsa export-coupling --pkl ../PATEX2PYPSA/runs/pac2/patex/run.pkl 
 ```
 
 Or do all of it with `scripts/run_coupled.sh runs/pac2 [--snakemake]`.
+
+Countries without PatEx data (47.x.4: AL, BA, CH, GB, ME, MK, NO, RS, XK) keep
+PyPSA-Eur's own demands; they are listed in `patex.fallback_countries`. Any other
+modelled country missing from the bundle stops the workflow, so a failed PatEx country
+cannot fall back silently.
 
 ## Report: Sankey and PatEx indicators
 

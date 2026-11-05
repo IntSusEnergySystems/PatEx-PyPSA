@@ -1,8 +1,8 @@
 # Model changes for the PatEx → PyPSA-Eur soft-link
 
 What each model gets from the link, what was changed in it, and why. Keep one line per
-change; details and data checks are in [SOFTLINKING_PLAN.md](SOFTLINKING_PLAN.md), dates
-in [CHANGELOG.md](CHANGELOG.md).
+change; details and data checks are in the fork's `docs/<sector>.md` ("Why"), open
+questions in [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md), dates in [CHANGELOG.md](CHANGELOG.md).
 
 **Rule of the link.** PatEx sets *what has to be served* (annual demand per country,
 fleet, district heating share, process emissions, CO2 factors). PyPSA-Eur decides *how*
@@ -61,6 +61,23 @@ unchanged (upstream test objective within solver tolerance).
 | `prepare_sector_network.add_industry`, `patex.plastics_eol_co2` (false) + `industry.waste_to_energy: true` | `HVC to air` emits nothing; waste CHPs burn non-recycled plastics with their CO2 | PatEx / inventory convention: plastics carbon is emitted only where waste is burned |
 | `rules/patex.smk` (`build_patex_report`) | HTML Sankey + PatEx indicators into `results/<run>/patex_report/` (not in `all`) | visual check of the PatEx side, as `build_times_sankey` in pypsa-wal |
 | `config/config.patex.yaml`, `config/test/config.patex.yaml` | run configs: `reduce_space_heat_exogenously: false`, machinery shares 0 / 1, plot colour | PatEx demand already includes renovation and machinery electrification |
+
+## Pitfalls already handled
+
+| Pitfall | Handling |
+|---|---|
+| Stacked legacy frames | `split_stacked` keeps each variable's own rows and dimensions |
+| Typos in filters → silent 0 | unknown dimension fails, unknown value warns, `coverage.csv` |
+| Double counting the electricity load | heat/industry stay explicit components; residual base load rescaled to `electricity base load` at the end |
+| Coke counted twice (PatEx coal includes it) | `coke` forced to 0 when industry is soft-linked |
+| Missing horizon | export fails, no interpolation |
+| Greece EL/GR | `mapping_countries.csv` |
+| Land transport and shipping built from 2023 totals | own hooks (`add_land_transport`, `add_shipping`) |
+| Feedstock gas CO2 in both PatEx process emissions and PyPSA combustion | `methane feedstock` load without CO2 |
+| Ammonia made twice (PatEx carriers + PyPSA `ammonia`) | `ammonia`, `methanol` = 0 |
+| Value column holding TWh, Mt and vehicles | `unit` column, a category mixing units fails |
+| `NO` read as `false` in YAML | quoted, `validate-config` |
+| Reproducibility | rules copied per run, `manifest.json` with checksums |
 
 ## Checks
 

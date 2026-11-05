@@ -1,7 +1,7 @@
 # TODO
 
-Backlog of the PatEx → PyPSA-Eur soft-link. Reasons and data are in
-[SOFTLINKING_PLAN.md](SOFTLINKING_PLAN.md) (`Qn` = open question there). Update this file
+Backlog of the PatEx → PyPSA-Eur soft-link. Open questions (`Qn`) are in
+[OPEN_QUESTIONS.md](OPEN_QUESTIONS.md), reasons per sector in the fork's `docs/<sector>.md`. Update this file
 at the end of every task: tick, add, or move items to "Done" with the commit.
 
 ## Next

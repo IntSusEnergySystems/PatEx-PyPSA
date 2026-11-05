@@ -35,12 +35,22 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
   `industry.waste_to_energy: true` in `config.patex.yaml` (T23); `docs/`: data flow per
   sector (buildings, transport, industry, agriculture, energy).
 - 2026-11-04 Industry hydrogen split over nodes by gross uses (T22).
+- 2026-11-05 `docs/<sector>.md`: "Why" sections (settled reasons moved from
+  `SOFTLINKING_PLAN.md`, incl. the chlor-alkali research in `industry.md`).
 
 ## PatEx
 
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-05 — SOFTLINKING_PLAN.md → OPEN_QUESTIONS.md
+
+- The plan is past: `OPEN_QUESTIONS.md` keeps only the open questions (Q1, Q3, Q5, Q8,
+  Q9 kept; new Q10–Q16, incl. Q14 methanol / ammonia ships absent from PatEx). Closed
+  questions, steps and the TIMES comparison removed; settled reasons moved to the fork's
+  `docs/<sector>.md` ("Why"), the pitfalls table to `MODEL_CHANGES.md`, the 25-country
+  PatEx run command and fallback countries to the README.
 
 ### 2026-11-04 — Cluster nic6 and pypsa2html
 
