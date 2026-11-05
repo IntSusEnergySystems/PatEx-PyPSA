@@ -35,8 +35,23 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
   deployment ramp per country. Data: CO2StoP / national CCS strategies.
 - [ ] (undecided) **T33 Build-rate limits** for renewables per country (IRENA additions ×
   factor, PyPSA-Wal `res_growth_allowance`).
-- [ ] (to discuss) **T34 Nuclear**: existing fleet and phase-out dates per country, must-run,
-  no new build in a 100 % renewables scenario (PyPSA-Wal `inflexible_nuclear`).
+- [ ] **T34 Nuclear** (PyPSA-Wal: `conventional.inflexible_nuclear`, `nuclear_helper.py`,
+  `extendable_nuclear_links`, commits `506106f5`, `bbc9450e`), general for every country:
+  - existing fleet and closure dates per country from national policy (PyPSA-Eur's
+    lifetimes: BE already 0 in 2030 although Doel 4 / Tihange 3 run to 2035; NL Borssele
+    gone by 2040 although an extension is planned); lifetime extension allowed once;
+    data: a maintained dataset or national decisions, with source and date;
+  - must-run: `p_min_pu = p_max_pu − 0.10` (option; today fully flexible from 0 to 100 %
+    each hour, which underestimates the flexibility needs);
+  - new build only where / when allowed per node and horizon (none in PAC 2.0: confirm
+    with CAN), nuclear as Links only (no Generator duplicate), no 10 MW threshold drop.
+- [ ] (proposal) **T35 Bio / synthetic credits attributed to the consumers** (reporting):
+  gas, oil and methanol are pooled, so a sector burning them shows fossil CO2 and the
+  credit sits on the production line (`biogas to gas`, bioliquids, Fischer-Tropsch,
+  methanation). Mass-balance attribution after the solve: each consumer's CO2 = its use ×
+  fossil share of its pool × factor; totals unchanged. In pypsa2html (sector pages) and our
+  summaries. For national caps (T28) decide how credits are booked (where produced vs
+  where consumed: the latter is non-linear in the optimisation).
 
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
