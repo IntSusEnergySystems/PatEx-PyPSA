@@ -7,11 +7,16 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 ## Next
 
 > Session handover (decisions waiting, implementation plans): `../private_notes/NEXT_SESSION.md`
-> (outside git). T18 and T19 below: proposal made, **wait for the user's confirmation**.
+> (outside git).
 
-- [ ] **T5 Push** (needs the user's written consent in the chat): both repos were pushed
-  on 2026-11-03; PatEx-PyPSA has local commits since (`git log origin/develop..develop`).
-  SSH key `id_ed25519` authenticates.
+- [ ] **T5 Push** (needs the user's written consent in the chat): `develop` of both repos
+  pushed on 2026-11-06 (before T18/T19); later commits are local
+  (`git log origin/develop..develop`). SSH key `id_ed25519` authenticates.
+- [ ] **T36 Next nic6 run**: bundle the fork and PATEX_PyPSA commits since the cluster's
+  (fork `8c38b995`, PATEX_PyPSA `1aa8cf4`) and the re-exported `levers2` bundle (T18/T19
+  columns); rerun BE-LU-NL without cap, check the ledger (cooking, DH loss rate) and
+  republish. pypsa2html: map the new carriers (`gas / oil / coal / solid biomass / H2 for
+  cooking`, `urban central heat losses`) on the local `can-climact` branch, with the user's go.
 ### System constraints from PyPSA-Wal (decided 2026-11-05; general, every country)
 
 Ported in this order, each as an option behind `patex.enable` with its data retrieved
@@ -50,17 +55,6 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE).
   Option: count PHEVs × 15/50 for the DSM store only.
-
-- [ ] **T18 Non-electric cooking is lost**: PatEx gas/oil/biomass/H2 cooking is exported
-  as `total {residential,services} cooking`, but PyPSA-Eur has no load for it (upstream gap
-  too). Not heat (user). Proposal: per-carrier cooking loads on the gas / oil / biomass /
-  H2 buses, CO2 counted, flat profile (plan in the handover).
-- [ ] **T19 District heating losses**: PatEx exports delivered heat and reports network
-  losses per country (`elc_energy-sankey-detailed`, heat → distribution-losses, buildings
-  and industry); PyPSA-Eur adds `district_heating_loss` 15 % EU-wide on building heat only.
-  Proposal (user's idea): loss 0 for PatEx countries + a PatEx loss load on the urban
-  central heat bus (plan in the handover).
-  (Figures: `../private_notes/FINDINGS.md`.)
 
 - [ ] **T20 First multi-country run on nic6 (BE, LU, NL)**, `config/patex/levers2-be-lu-nl.yaml`
   (levers 2, 10 nodes, 3h, myopic 2030-2050). With PyPSA-Eur's default CO2 budget the
@@ -117,6 +111,12 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
 
 ## Done
 
+- 2026-11-06 T19 District heating losses from PatEx: rate per country (losses / delivered heat,
+  `elc_energy-sankey-detailed`) on the building + low-temperature industry heat of each urban
+  central bus, as load `urban central heat losses`; `district_heating_loss` 0 for PatEx
+  countries (fallback countries keep 15 %). BE test: building heat 1.0000, rate = PatEx's.
+- 2026-11-06 T18 Non-electric cooking: flat loads per fuel (gas, oil, coal, solid biomass via
+  links with the fuel's CO2; H2 on the H2 bus), PatEx countries only. BE test ledger 1.0000.
 - 2026-11-05 T35 `scripts/co2_by_sector.py`: CO2 per country and sector, bio credits moved to
   the consumers of the gas / oil / methanol pools (mass balance, total checked); test.
 - 2026-11-05 Gas storage = working gas (upstream reads the cushion gas: BE 15x too small,

@@ -9,7 +9,7 @@ variables to exactly one path:
   ``carrier``;
 * sector: the rule's label, where ``{dim}`` is replaced by the row's value;
 * PyPSA-Eur input: a node of ``data/sankey_nodes.csv``, or a grey "not passed" node
-  (ambient heat, non-electric cooking, solid waste).
+  (ambient heat, solid waste).
 
 Agriculture rows go to ``agriculture split`` and are spread over the three PyPSA-Eur
 agriculture uses with the same JRC-IDEES shares as the export. A row matched by no rule,

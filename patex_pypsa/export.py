@@ -8,7 +8,7 @@ Layout (mirrors TIMES_PyPSA's ``<coupling_dir>``)::
     └── pypsa_inputs/
         ├── patex_energy_totals_{h}.csv    # country × energy_totals columns [TWh/a]
         ├── patex_industry_{h}.csv         # country × industrial demand columns [TWh/a, MtCO2/a]
-        ├── patex_parameters_{h}.csv       # country × district heat share [-], number evs
+        ├── patex_parameters_{h}.csv       # country × district heat share [-], district heating loss [-], number evs
         ├── patex_co2_intensity_{h}.csv    # PyPSA-Eur carrier → CO2 intensity [tCO2/MWh], + oil refining
         ├── patex_co2_factors.csv          # PatEx factors used (sector, fuel) [tCO2/MWh]
         ├── patex_demands_long.csv         # every horizon, long format, for QA
@@ -128,6 +128,11 @@ def horizon_tables(
     if "district heat" in parameters:
         heat = out["energy_totals"][HEAT_COLUMNS].sum(axis=1)
         parameters["district heat share"] = parameters.pop("district heat") / heat
+    if "district heat losses" in parameters:
+        # PatEx network-losses[%]: losses / heat delivered (0 without heat networks)
+        delivered = parameters.pop("district heat delivered")
+        losses = parameters.pop("district heat losses")
+        parameters["district heating loss"] = (losses / delivered.where(delivered > 0)).fillna(0.0)
     return out
 
 
@@ -234,7 +239,7 @@ def export_coupling_dir(
         "agriculture_shares_sha256": sha256(mappings_dir / AGRICULTURE_SHARES_FILE),
         "countries": sorted(long["country"].unique()),
         "horizons": horizons,
-        "units": "TWh/a; process emissions MtCO2e/a; number evs; district heat share [-]",
+        "units": "TWh/a; process emissions MtCO2e/a; number evs; district heat share, district heating loss [-]",
         "co2_factors": dataset or ("given" if co2_factors is not None else None),
         "uncovered_slices": len(gaps),
         "created": datetime.now(timezone.utc).isoformat(timespec="seconds"),

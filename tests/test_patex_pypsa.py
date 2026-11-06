@@ -146,15 +146,23 @@ def test_horizon_tables_turn_waste_into_co2_and_district_heat_into_share():
             ("industry", "solid waste", "BE", 2030, "TWh", 10.0),
             ("industry", "process emission", "BE", 2030, "MtCO2e", 3.0),
             ("parameters", "district heat", "BE", 2030, "TWh", 5.0),
+            ("parameters", "district heat losses", "BE", 2030, "TWh", 1.5),
+            ("parameters", "district heat delivered", "BE", 2030, "TWh", 10.0),
+            ("parameters", "district heat losses", "LU", 2030, "TWh", 0.0),
+            ("parameters", "district heat delivered", "LU", 2030, "TWh", 0.0),
             ("parameters", "number evs", "BE", 2030, "number", 1e6),
         ]
-        + [("energy_totals", c, "BE", 2030, "TWh", 5.0) for c in HEAT_COLUMNS]
+        + [("energy_totals", c, ct, 2030, "TWh", 5.0) for c in HEAT_COLUMNS for ct in ("BE", "LU")]
     )
     out = horizon_tables(long, 2030, pd.Series({"BE": 0.4}))
     assert "solid waste" not in out["industry"]
     assert out["industry"].at["BE", "process emission"] == pytest.approx(3.0 + 10.0 * 0.4)
     assert out["industry"].at["BE", "ammonia"] == 0.0  # made from PatEx carriers already
     assert out["parameters"].at["BE", "district heat share"] == pytest.approx(0.25)
+    # PatEx loss rate on all network heat; 0 without heat networks
+    assert out["parameters"].at["BE", "district heating loss"] == pytest.approx(0.15)
+    assert out["parameters"].at["LU", "district heating loss"] == 0.0
+    assert not {"district heat losses", "district heat delivered"} & set(out["parameters"])
     with pytest.raises(ValueError, match="CO2 factors"):
         horizon_tables(long, 2030)
 
@@ -213,6 +221,10 @@ def test_canonical_rules_on_synthetic_run(tmp_path):
     )
     et = pd.read_csv(out / "patex_energy_totals_2030.csv", index_col=0)
     assert {"total road", "electricity residential", "total residential space"} <= set(et.columns)
+    assert {"gas cooking", "oil cooking", "solid biomass cooking", "coal cooking",
+            "hydrogen cooking"} <= set(et.columns)
+    par = pd.read_csv(out / "patex_parameters_2030.csv", index_col=0)
+    assert par["district heating loss"].between(0, 1).all()
     ind = pd.read_csv(out / "patex_industry_2030.csv", index_col=0)
     assert {"process emission", "methane feedstock", "oil for industry"} <= set(ind.columns)
     ci = pd.read_csv(out / "patex_co2_intensity_2030.csv", index_col=0)["CO2 intensity"]

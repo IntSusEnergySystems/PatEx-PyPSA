@@ -7,6 +7,13 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-06 T18 non-electric cooking: `add_patex_cooking_loads` (flat loads per fuel, links
+  with the fuel's CO2, `H2 for cooking`), cooking columns split like PyPSA-Eur's cooking
+  totals. T19 district heating losses: `add_heat` gets `no_district_heating_loss` (PatEx
+  countries), `add_patex_district_heating_losses` (PatEx rate on building + industry heat of
+  each urban central bus, `patex.district_heating`). Plot colours; `docs/buildings.md`,
+  `docs/energy.md`.
+- 2026-11-06 Pushed `develop` to origin (user consent).
 - 2026-11-05 Gas storage from working gas, no clip (behind `patex.enable`;
   `build_gas_input_locations` param `patex_enable`); `docs/energy.md`.
 - 2026-11-05 T27 reverted: no `scale_patex_industry_co2`, no industry intensity file; physical
@@ -68,6 +75,17 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-06 — T18 cooking per fuel, T19 PatEx district heating loss rate
+
+- Export: `{gas,oil,solid biomass,coal,hydrogen} cooking` (energy totals), `district heating
+  loss` (parameters: heat distribution losses / heat delivered from
+  `elc_energy-sankey-detailed`; rest of that Sankey explicitly ignored, coverage stays empty).
+- Report Sankey: non-electric cooking goes to `Building cooking (non-electric)`.
+- `check_network_ledger.py`: cooking per fuel, district heating loss rate, cooking CO2
+  intensities; `co2_by_sector.py`: cooking carriers → buildings. Tests.
+- `levers2` bundle re-exported; BE 2030 test ledger all 1.0000 (building heat now exact).
+- Pushed `develop` (user consent, before this change).
 
 ### 2026-11-05 — T35: CO2 per sector with bio credits on consumers
 

@@ -448,8 +448,8 @@ def sankey_page(
 <p class="meta">PatEx final energy of {year} (and ambient heat), from fuel (left) through the
 PatEx sector or end use (middle) to the PyPSA-Eur input it becomes (right). Link colour =
 PyPSA-Eur sector of the input: {legend}. Grey right-hand nodes are PatEx energy that is not
-passed on purpose (ambient heat: PyPSA-Eur uses heat-pump COPs; non-electric cooking: no
-PyPSA-Eur load; industrial solid waste: only its CO2 is passed). Every row of the PatEx demand
+passed on purpose (ambient heat: PyPSA-Eur uses heat-pump COPs; industrial solid waste:
+only its CO2 is passed). Every row of the PatEx demand
 variables is drawn exactly once (<code>data/sankey_flows.csv</code>). Flows below {threshold} TWh
 are hidden.</p>
 <div class="controls">Country: <select id="country"></select></div>

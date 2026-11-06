@@ -33,15 +33,16 @@ and, for the CO2 factors only, the dataset.
 | `process emission from feedstock` | PatEx olefin process emissions | in PyPSA-Eur only a split of the naphtha carbon, not extra CO2 |
 | Solid waste in industry | energy × PatEx CO2 factor → process emission | no such fuel in PyPSA-Eur: not supplied by the network, only its CO2 kept |
 | `district heat share` (new) | district heat / building heat (final) | replaces PyPSA-Eur's today share + progress |
+| `district heating loss` (new, T19) | heat distribution losses / heat delivered (`elc_energy-sankey-detailed`) = PatEx `network-losses[%]` | PatEx's rate per country on all network heat (buildings and industry), replaces PyPSA-Eur's 15 % on building heat only |
+| `{gas,oil,solid biomass,coal,hydrogen} cooking` (new, T18) | non-electric cooking per fuel, residential + services | PyPSA-Eur has no cooking load: the fuel and its CO2 were missing |
 | `number evs` (new) | cars and vans BEV + PHEV | sizes chargers, smart charging, V2G |
 | CO2 intensity of `gas`, `oil`, `coal` | PatEx combustion factors (ind, tra, agr, bld) weighted by PatEx fossil use per horizon | PyPSA-Eur counts combustion CO2 with PatEx's factors; values are computed from PatEx, not written in the config |
 | Not passed: PatEx's inventory (CRF) calibration of combustion CO2 (T27) | — | its rates partly move emissions between sectors; PyPSA counts physical carbon; baseline consistency handled as a total (T11, fork `docs/energy.md`) |
 | `oil refining` CO2 per MWh of oil (row of `patex_co2_intensity_{h}.csv`, new, T26) | PatEx refinery emissions (before capture) / refinery output, all run countries | emissions-per-unit parameter from PatEx, like the fuel factors; replaces `industry.oil_refining_emissions` |
 
 Not passed (on purpose): power-sector outputs `elc_*` (compared afterwards), fuel origin
-(fossil/bio/syn), refinery throughput (only its CO2 per MWh), heating technologies, district heating network losses
-(PyPSA-Eur adds its own, `district_heating_loss`, T19). Not passed by gap: non-electric
-cooking (exported, but PyPSA-Eur has no load for it, T18).
+(fossil/bio/syn), refinery throughput (only its CO2 per MWh), heating technologies; of the
+heat network losses only the rate is passed (PyPSA-Eur applies it to its own delivered heat).
 
 ## PyPSA-Eur (fork `IntSusEnergySystems/PyPSA-Eur-CANEU`, branch `develop`)
 
@@ -65,6 +66,8 @@ unchanged (upstream test objective within solver tolerance).
 | `prepare_sector_network.add_shipping` | international navigation per country from PatEx, port split kept; fuel shares per country from PatEx, energy per fuel without conversion | `shipping_demand.csv` is built from 2023; PyPSA-Eur's shares and efficiencies would change PatEx's fuel mix and energy |
 | `prepare_sector_network.add_gas_vehicles` (new) | `land transport gas` load per node, ICE profile, from the gas bus with CO2 | PyPSA-Eur has no gas vehicles |
 | `prepare_sector_network.add_patex_transport_loads` (new) | loads `rail electricity`, `aviation electricity`, `shipping electricity` (base-load shape, transmission bus), `H2 for rail` (flat) | PyPSA-Eur has no such loads; each fuel visible in its own load |
+| `prepare_sector_network.add_heat` (`no_district_heating_loss`), `add_patex_district_heating_losses` (new) | `district_heating_loss` = 0 for the PatEx countries; load `urban central heat losses` = PatEx rate × building + low-temperature industry heat on each urban central bus (`patex.district_heating`) | see `district heating loss`; losses visible as their own load |
+| `prepare_sector_network.add_patex_cooking_loads` (new) | flat loads `gas / oil / coal / solid biomass for cooking` fed by links with the fuel's CO2, `H2 for cooking` on the H2 bus (`patex.energy_totals`) | see `<fuel> cooking` |
 | `prepare_sector_network.add_industry` | load `gas feedstock for industry` on the gas bus, no CO2 | see `methane feedstock` |
 | `prepare_sector_network.add_industry` | load `oil for industry` + link from the oil bus with oil CO2 (T24) | see `oil for industry` |
 | `build_industrial_energy_demand_per_node.py` | `methane feedstock`, `oil for industry` = 0 for fallback countries; error if the bundle has no `oil for industry` | the copied PyPSA-Eur values would double their gas and naphtha |
@@ -96,5 +99,4 @@ and reconciles each PyPSA-Eur node with the bundle (levers 2, all horizons: rati
 
 `scripts/check_network_ledger.py` compares a solved or composed network with the bundle:
 loads per carrier and country, process emissions, EV fleet, district heating share and
-CO2 intensities. BE 2030 test: all 1.0000, except district heating +15 % / building heat
-+0.5 % (PyPSA-Eur district heating losses, T19).
+loss rate, cooking per fuel, CO2 intensities. BE 2030 test (2026-11-06): all 1.0000.

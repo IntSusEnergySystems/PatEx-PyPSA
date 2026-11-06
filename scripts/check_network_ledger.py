@@ -8,7 +8,8 @@ compares the annual exogenous loads [TWh/a, process emissions MtCO2/a] with the 
 Loads that PyPSA-Eur aggregates at EU level (``regional_oil_demand: false``) are
 compared with the sum over the PatEx countries of the network. ``ratio`` should be 1
 except where noted. Then: CO2 intensities of the fuel links, EV fleet (charger
-capacity / charge rate) and district heating share of the building heat loads.
+capacity / charge rate), district heating share of the building heat loads and district
+heating loss rate.
 """
 
 import argparse
@@ -76,6 +77,16 @@ CHECKS = {
         "electricity navigation",
         "",
     ),
+    "cooking gas": (["gas for cooking"], "energy_totals", "gas cooking", "flat"),
+    "cooking oil": (["oil for cooking"], "energy_totals", "oil cooking", "flat"),
+    "cooking solid biomass": (
+        ["solid biomass for cooking"],
+        "energy_totals",
+        "solid biomass cooking",
+        "flat",
+    ),
+    "cooking coal": (["coal for cooking"], "energy_totals", "coal cooking", "flat"),
+    "cooking hydrogen": (["H2 for cooking"], "energy_totals", "hydrogen cooking", "flat"),
     "industry electricity": (["industry electricity"], "industry", "electricity", ""),
     "industry hydrogen": (["H2 for industry"], "industry", "hydrogen", ""),
     "industry methane": (["gas for industry"], "industry", "methane", ""),
@@ -215,7 +226,31 @@ if heat and central:
     for ct in countries:
         rows.append(
             ("district heat share", ct, share.get(ct, 0.0),
-             bundles["parameters"]["district heat share"].get(ct), "network incl. district heating loss")
+             bundles["parameters"]["district heat share"].get(ct), "network, losses in their own load")
+        )
+
+# district heating losses: PatEx rate × heat delivered on the urban central buses
+if "urban central heat losses" in loads.index:
+    weights = n.snapshot_weightings.generators
+    nyears = weights.sum() / 8760
+    on_central = n.loads[
+        n.loads.bus.str.endswith(" urban central heat")
+        & n.loads.carrier.isin(["urban central heat", "low-temperature heat for industry"])
+    ]
+    delivered = (
+        n.get_switchable_as_dense("Load", "p_set")[on_central.index]
+        .multiply(weights, axis=0)
+        .sum()
+        .groupby(on_central.bus.map(n.buses.location).str[:2])
+        .sum()
+        / nyears
+        / 1e6
+    )
+    rate = loads.loc["urban central heat losses"] / delivered.where(delivered > 0)
+    for ct in countries:
+        rows.append(
+            ("district heating loss [-]", ct, rate.get(ct, 0.0),
+             bundles["parameters"]["district heating loss"].get(ct), "losses / heat on urban central buses")
         )
 
 table = pd.DataFrame(rows, columns=["check", "country", "network", "patex", "note"])
@@ -227,9 +262,9 @@ print(table.round({"network": 3, "patex": 3, "ratio": 4}).to_string(index=False)
 # CO2 intensity of the links burning each fuel
 co2 = pd.read_csv(inputs / f"patex_co2_intensity_{args.horizon}.csv", index_col=0)["CO2 intensity"]
 fuel_links = {
-    "gas": ["gas for industry", "land transport gas"],
-    "oil": ["oil for industry", "land transport oil"],
-    "coal": ["coal for industry"],
+    "gas": ["gas for industry", "land transport gas", "gas for cooking"],
+    "oil": ["oil for industry", "land transport oil", "oil for cooking"],
+    "coal": ["coal for industry", "coal for cooking"],
     "oil refining": ["oil refining"],
 }
 print("\nCO2 intensity [tCO2/MWh]: carrier, link checked, network, PatEx")

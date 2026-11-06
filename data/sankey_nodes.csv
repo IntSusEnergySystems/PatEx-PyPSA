@@ -2,6 +2,7 @@ pypsa,group,bundle,expression
 Building heat,heat,energy_totals,total residential space + total residential water + total services space + total services water
 Ambient heat (heat-pump COP),not passed,,
 Electricity base load,electricity,energy_totals,electricity base load
+Building cooking (non-electric),heat,energy_totals,gas cooking + oil cooking + solid biomass cooking + coal cooking + hydrogen cooking
 Land transport EV,transport,energy_totals,electricity road
 Land transport fuel cell,transport,energy_totals,hydrogen road
 Land transport gas,transport,energy_totals,gas road

@@ -17,6 +17,11 @@ total services water,energy_totals,1,bld_energy-demand-incl-district-heating[TWh
 total services water,energy_totals,-1,bld_energy-demand[TWh],building-type=non-residential; end-use=hotwater; energy-carrier=ambiant,
 total services cooking,energy_totals,1,bld_energy-demand[TWh],building-type=non-residential; end-use=cooking,
 electricity services cooking,energy_totals,1,bld_energy-demand[TWh],building-type=non-residential; end-use=cooking; energy-carrier=electricity,
+gas cooking,energy_totals,1,bld_energy-demand[TWh],end-use=cooking; energy-carrier=gaseous-ff-natural|gaseous-bio|gaseous-syn,"Not a PyPSA-Eur column: non-electric cooking (residential + services), flat load on the gas bus via a link with gas CO2 (T18). Split over nodes like total residential + services cooking."
+oil cooking,energy_totals,1,bld_energy-demand[TWh],end-use=cooking; energy-carrier=liquid-ff-oil|liquid-bio|liquid-syn,"Not a PyPSA-Eur column: oil bus, oil CO2 (T18)."
+solid biomass cooking,energy_totals,1,bld_energy-demand[TWh],end-use=cooking; energy-carrier=solid-biomass,"Not a PyPSA-Eur column: solid biomass bus, no net CO2 (T18)."
+coal cooking,energy_totals,1,bld_energy-demand[TWh],end-use=cooking; energy-carrier=solid-ff-coal,"Not a PyPSA-Eur column: coal bus, coal CO2 (T18)."
+hydrogen cooking,energy_totals,1,bld_energy-demand[TWh],end-use=cooking; energy-carrier=hydrogen,"Not a PyPSA-Eur column: H2 bus (T18)."
 _covered elsewhere,ignore,1,bld_energy-demand[TWh],end-use=heating|hotwater; energy-carrier!=electricity|ambiant,"Non-electric space/water heating is taken from bld_energy-demand-incl-district-heating (total ... space/water)."
 _buildings non-electric other uses,ignore,1,bld_energy-demand[TWh],end-use=appliances-all|cooling|others; energy-carrier!=electricity,"OPEN QUESTION: PyPSA-Eur has no bus for non-electric appliances/others. Check the size; add to heat or drop explicitly."
 electricity,agriculture,1,agr_energy-demand-by-vector[TWh],energy-carrier=electricity,"Agriculture rows: category = carrier group, split into total agriculture electricity/heat/machinery with data/agriculture_use_shares.csv (JRC-IDEES base-year shares, see patex_pypsa/agriculture.py)."
@@ -66,6 +71,9 @@ process emission,industry,1,ind_emissions-by-material-by-type[MtCO2e],emission-t
 process emission from feedstock,industry,1,ind_emissions-by-material-by-type[MtCO2e],emission-type=process; material=chemical-olefin,"Steam cracker CO2: in PyPSA-Eur a split of the naphtha carbon (process vs end of life), not added on top."
 _combustion emissions,ignore,1,ind_emissions-by-material-by-type[MtCO2e],emission-type=combustion,"PyPSA-Eur computes combustion CO2 from the fuels it supplies."
 district heat,parameters,1,bld_district-energy-demand[TWh],,"Turned into district heat share = district heat / (total residential + services space + water) at export, same final-energy base as the heat totals."
+district heat losses,parameters,1,elc_energy-sankey-detailed[TWh],label=heat; source=available-after-transformation; target=distribution-losses,"Turned into district heating loss = losses / delivered heat at export (T19): PatEx network-losses[%] on all heat (buildings, industry, energy branch)."
+district heat delivered,parameters,1,elc_energy-sankey-detailed[TWh],label=heat; source=available-after-transformation; target=fec|consumption-energy-branch,"Heat delivered by the networks, base of the PatEx loss rate."
+_energy sankey,ignore,1,elc_energy-sankey-detailed[TWh],,"Supply Sankey: only the heat network losses and deliveries are read (district heat losses / delivered)."
 number evs,parameters,1,tra_total-veh-fleet[number],vehicule-type=LDV; motor-type=BEV|PHEV,"Cars and vans with a plug (PHEV once, under its fuel carrier). Sizes EV chargers, smart charging and V2G (PyPSA-Eur car-type battery)."
 _other vehicles,ignore,1,tra_total-veh-fleet[number],vehicule-type!=LDV,
 _LDV without plug,ignore,1,tra_total-veh-fleet[number],vehicule-type=LDV; motor-type!=BEV|PHEV,
