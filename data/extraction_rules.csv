@@ -77,3 +77,18 @@ _energy sankey,ignore,1,elc_energy-sankey-detailed[TWh],,"Supply Sankey: only th
 number evs,parameters,1,tra_total-veh-fleet[number],vehicule-type=LDV; motor-type=BEV|PHEV,"Cars and vans with a plug (PHEV once, under its fuel carrier). Sizes EV chargers, smart charging and V2G (PyPSA-Eur car-type battery)."
 _other vehicles,ignore,1,tra_total-veh-fleet[number],vehicule-type!=LDV,
 _LDV without plug,ignore,1,tra_total-veh-fleet[number],vehicule-type=LDV; motor-type!=BEV|PHEV,
+gas,supply,1,elc_energy-sankey-detailed[TWh],source=import; label=gaseous-ff,"Gross imports per fuel (T29), summed over the modelled countries by PyPSA-Eur: cap on the gas generators' import part (LNG and pipeline entries; domestic production apart)."
+oil,supply,1,elc_energy-sankey-detailed[TWh],source=import; label=liquid-ff-crude|liquid-ff,"Crude and oil products: cap on oil primary."
+coal,supply,1,elc_energy-sankey-detailed[TWh],source=import; label=solid-ff,"Cap on the EU coal generator (PyPSA-Eur has no domestic hard coal)."
+H2,supply,1,elc_energy-sankey-detailed[TWh],source=import; label=hydrogen,"Cap on import H2."
+synthetic gas,supply,1,elc_energy-sankey-detailed[TWh],source=import; label=gaseous-synfuels,"Cap on import gas (carbon-neutral methane)."
+synthetic oil,supply,1,elc_energy-sankey-detailed[TWh],source=import; label=liquid-synfuels,"Cap on import oil (carbon-neutral liquids)."
+electricity,supply,1,elc_energy-sankey-detailed[TWh],source=import; label=electricity,"Not used: PyPSA-Eur has no electricity supply from outside the modelled countries."
+_heat imports,ignore,1,elc_energy-sankey-detailed[TWh],source=import; label=heat,"No such import in PyPSA-Eur."
+solid biomass,supply,1,agr_bio-energy-production-by-energy-carrier-origin[TWh],origin=import; energy-carrier=solid-biomass,"Cap on solid biomass import."
+biogas,supply,1,agr_bio-energy-production-by-energy-carrier-origin[TWh],origin=import; energy-carrier=gaseous-bio|biomethane,"Cap on import biogas (carbon-neutral methane)."
+bioliquids,supply,1,agr_bio-energy-production-by-energy-carrier-origin[TWh],origin=import; energy-carrier=liquid-bio|liquid-bio-diesel|liquid-bio-gasoline|liquid-bio-kerosene|liquid-bio-marinefueloil,"Cap on import bioliquids (carbon-neutral liquids)."
+_domestic bioenergy,ignore,1,agr_bio-energy-production-by-energy-carrier-origin[TWh],origin!=import,"Domestic bioenergy: PyPSA-Eur uses its own potentials."
+gas production,supply,1,elc_energy-sankey-detailed[TWh],source=primary-production; label=gaseous-ff,"Domestic fossil production, cap on the domestic supply of that fuel (T29): gas production generators."
+oil production,supply,1,elc_energy-sankey-detailed[TWh],source=primary-production; label=liquid-ff-crude|liquid-ff,"Cap on oil production (domestic crude)."
+coal production,supply,1,elc_energy-sankey-detailed[TWh],source=primary-production; label=solid-ff,"Cap on coal production + lignite (PatEx has one solid fossil carrier)."

@@ -9,6 +9,7 @@ Layout (mirrors TIMES_PyPSA's ``<coupling_dir>``)::
         ├── patex_energy_totals_{h}.csv    # country × energy_totals columns [TWh/a]
         ├── patex_industry_{h}.csv         # country × industrial demand columns [TWh/a, MtCO2/a]
         ├── patex_parameters_{h}.csv       # country × district heat share [-], district heating loss [-], number evs
+        ├── patex_supply_{h}.csv           # country × fuel gross imports, domestic production [TWh/a]
         ├── patex_co2_intensity_{h}.csv    # PyPSA-Eur carrier → CO2 intensity [tCO2/MWh], + oil refining
         ├── patex_co2_factors.csv          # PatEx factors used (sector, fuel) [tCO2/MWh]
         ├── patex_demands_long.csv         # every horizon, long format, for QA
@@ -62,6 +63,7 @@ TARGET_FILES = {
     "energy_totals": "patex_energy_totals",
     "industry": "patex_industry",
     "parameters": "patex_parameters",
+    "supply": "patex_supply",
 }
 
 #: PyPSA-Eur columns with no PatEx counterpart, set to 0 so PyPSA's own value
@@ -70,6 +72,8 @@ TARGET_FILES = {
 #: methane, ...), where PyPSA-Eur asks the network for the product itself.
 ZERO_COLUMNS = {
     "industry": ["coke", "ammonia", "methanol"],
+    # fuels PyPSA-Eur can import that PatEx never imports: cap 0
+    "supply": ["methanol", "NH3"],
 }
 
 #: building heat columns the district heat share is taken on (final energy incl.
