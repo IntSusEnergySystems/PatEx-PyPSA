@@ -7,6 +7,8 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-07 `nuclear_fleet.min_remaining_years` 5 → 4 (user): BE's Doel 4 / Tihange 3
+  (end 2035) now in the 2030 horizon.
 - 2026-11-07 T34 `nuclear_fleet` (new top-level config section, standalone, default off;
   `scripts/_nuclear_fleet.py`, applied in `compose_network` after the brownfield step):
   per-reactor links from `data/nuclear_fleet.csv`, duplicate generators removed, uranium

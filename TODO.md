@@ -115,7 +115,7 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
   from `data/nuclear_fleet.csv` (official sources, 109 operating + 3 under construction),
   duplicate generators removed, uranium supply added (upstream links could not run), one
   10-year extension (model's choice at fixed O&M; none if the end date is already an
-  extension), not used within 5 years of its end, default lifetime 50 years, must-run 0.10.
+  extension), not used within 4 years of its end (user, 2026-11-07; was 5), default lifetime 50 years, must-run 0.10.
   BE and NL have no usable nuclear from 2030 (end dates 2035 / 2033 final). Tests.
 - 2026-11-07 T29 Import limits (fork option `import_limits`, standalone; PatEx hook
   `patex.import_limits`, bundle `patex_supply_{h}.csv`): caps on gross imports per fuel
