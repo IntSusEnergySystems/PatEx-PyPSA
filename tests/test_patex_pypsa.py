@@ -223,6 +223,9 @@ def test_canonical_rules_on_synthetic_run(tmp_path):
     assert {"total road", "electricity residential", "total residential space"} <= set(et.columns)
     assert {"gas cooking", "oil cooking", "solid biomass cooking", "coal cooking",
             "hydrogen cooking"} <= set(et.columns)
+    supply = pd.read_csv(out / "patex_supply_2030.csv", index_col=0)
+    assert {"gas", "oil", "coal", "H2", "biogas", "gas production"} <= set(supply.columns)
+    assert (supply[["methanol", "NH3"]] == 0).all().all()  # PatEx imports neither
     par = pd.read_csv(out / "patex_parameters_2030.csv", index_col=0)
     assert par["district heating loss"].between(0, 1).all()
     ind = pd.read_csv(out / "patex_industry_2030.csv", index_col=0)

@@ -12,10 +12,10 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): `develop` of both repos
   pushed on 2026-11-06 (before T18/T19); later commits are local
   (`git log origin/develop..develop`). SSH key `id_ed25519` authenticates.
-- [ ] **T36 Next nic6 run**: bundle the fork and PATEX_PyPSA commits since the cluster's
-  (fork `8c38b995`, PATEX_PyPSA `1aa8cf4`) and the re-exported `levers2` bundle (T18/T19
-  columns); rerun BE-LU-NL without cap, check the ledger (cooking, DH loss rate) and
-  republish (pypsa2html `can-climact` already maps the T18/T19 carriers, `4450250`).
+- [ ] **T36 nic6 run BE-LU-NL, CO2 cap 50 % of 1990, 24h, with the import limits (T29)**:
+  overlay `config/patex/co2-cap-50-24h.yaml`; bundle the fork / PATEX_PyPSA commits since the
+  cluster's (fork `8c38b995`, PATEX_PyPSA `1aa8cf4`) and the re-exported `levers2` bundle;
+  ledger (cooking, DH loss rate, supply caps), report (pypsa2html `can-climact`), publish.
 ### System constraints from PyPSA-Wal (decided 2026-11-05; general, every country)
 
 Ported in this order, each as an option behind `patex.enable` with its data retrieved
@@ -30,9 +30,11 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
   credit (PyPSA-Wal excluded aviation). Data: national targets (CAN) or PatEx trajectory.
 - [ ] **T30 Cross-border capacity limits** per border (NTC ceilings, grid expansion up to
   them; PyPSA-Wal `set_NTCs.py`). Data: ENTSO-E TYNDP 2024 for every border.
-- [ ] **T29 Import limits** per country: electricity (share of local supply or TWh/a,
-  PyPSA-Wal `add_selfsufficiency_constraints`), plus optional limits per imported fuel
-  (gas, oil, H2, methanol, ammonia...). Data: scenario values (CAN / PatEx).
+- [x] **T29 Import limits per fuel**: done 2026-11-07 as gross imports per fuel for the
+  whole region (user's decision), see Done. Left: stricter treatment of PatEx's domestic
+  "production" once the PAC 2.0 scenario is checked (now: gap added to the import cap);
+  electricity self-sufficiency per country (PyPSA-Wal `add_selfsufficiency_constraints`),
+  if CAN wants it (Q16).
 - [ ] **T31 Offshore wind potentials** per country from marine spatial plans (upstream's
   2 MW/km² is below installed capacity in BE, NL, DE). Data: national maritime spatial
   plans / EU MSP platform.
@@ -110,6 +112,14 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
 
 ## Done
 
+- 2026-11-07 T29 Import limits (fork option `import_limits`, standalone; PatEx hook
+  `patex.import_limits`, bundle `patex_supply_{h}.csv`): caps on gross imports per fuel
+  summed over the modelled countries (gas, oil, coal, H2, NH3, synthetic gas / oil,
+  methanol, solid biomass, biogas, bioliquids), as `GlobalConstraint`s solved in
+  `solve_network` (dual in `mu`); gas fields split from the entries; new carbon-neutral
+  `import biogas` / `import bioliquids`; domestic gas / oil / coal capped at min(PatEx
+  production, today's Eurostat production), the rest of PatEx's production added to the
+  import cap and logged. BE test: caps hold, biogas binding. pypsa2html maps the new carriers.
 - 2026-11-06 T19 District heating losses from PatEx: rate per country (losses / delivered heat,
   `elc_energy-sankey-detailed`) on the building + low-temperature industry heat of each urban
   central bus, as load `urban central heat losses`; `district_heating_loss` 0 for PatEx

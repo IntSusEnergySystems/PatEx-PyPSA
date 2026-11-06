@@ -44,6 +44,15 @@ the sector doc and deleting it here.
   fuel split from PatEx, so without them PyPSA-Eur has no methanol ships in PatEx
   countries; ammonia ships would need a new load in PyPSA-Eur.
 - **Q15 PAC 2.0 lever file (T6)** → `runs/pac2/patex/levers.json` (runs use levers = 2).
+- **Q17 Fossil imports and domestic production (T29).** For gas and coal, PatEx imports
+  `demand × energy-net-import-refineries[%]` and books the rest as primary production,
+  also where a country has no resource (coal in Belgium). What do the lever's values
+  stand for, and will PAC 2.0 set them per country? Until then the soft-link adds the
+  production above today's (Eurostat) to the import cap.
+- **Q18 Bioenergy imports (T29).** Gross imports by origin (`agr_bio-energy-production-by-
+  energy-carrier-origin`): some countries import far more biogas than their gas use
+  (figures in FINDINGS). Expected? Only one country imports electricity: is electricity
+  trade switched off elsewhere?
 
 ## For CAN
 

@@ -7,6 +7,14 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-07 T29 `import_limits` (new top-level config section, standalone, default off;
+  `scripts/_import_limits_config.py`): caps on gross imports per fuel for the whole region
+  and on domestic gas / oil / coal (`GlobalConstraint` types `import_limit` /
+  `domestic_limit`, `solve_network.add_supply_limits_per_fuel`); gas fields split from the
+  entries (`gas production`); `add_bio_imports` (`import biogas`, `import bioliquids`);
+  `add_domestic_supply`. PatEx hook `patex.import_limits` (`patex_supply_{h}.csv`, Eurostat
+  production for the gap). `config.patex.yaml`: import options on. Overlay
+  `config/patex/co2-cap-50-24h.yaml`. Plot colours; `docs/energy.md`.
 - 2026-11-06 T18 non-electric cooking: `add_patex_cooking_loads` (flat loads per fuel, links
   with the fuel's CO2, `H2 for cooking`), cooking columns split like PyPSA-Eur's cooking
   totals. T19 district heating losses: `add_heat` gets `no_district_heating_loss` (PatEx
@@ -75,6 +83,13 @@ Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
+
+### 2026-11-07 — T29 supply caps in the bundle
+
+- Export `patex_supply_{h}.csv`: gross imports per fuel (supply Sankey `source = import`,
+  bioenergy `origin = import`) and `<fuel> production` (primary production of gas, oil,
+  coal); methanol / NH3 = 0; rest of the supply Sankey and domestic bioenergy ignored.
+- `check_network_ledger.py`: supply caps of the network vs the bundle. Test.
 
 ### 2026-11-06 — T18 cooking per fuel, T19 PatEx district heating loss rate
 

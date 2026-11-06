@@ -259,6 +259,20 @@ pd.set_option("display.width", 200, "display.max_colwidth", 60)
 print(f"{args.network} vs {inputs} ({args.horizon}), TWh/a")
 print(table.round({"network": 3, "patex": 3, "ratio": 4}).to_string(index=False))
 
+# supply caps (import_limits): network cap vs PatEx imports summed over the countries;
+# above 1 by the PatEx production that today's production cannot supply (gap, logged
+# by compose_network); domestic cap <= PatEx production
+supply_file = inputs / f"patex_supply_{args.horizon}.csv"
+caps = n.global_constraints[n.global_constraints.type.isin(["import_limit", "domestic_limit"])]
+if len(caps) and supply_file.exists():
+    supply = pd.read_csv(supply_file, index_col=0).reindex(countries).sum()
+    nyears = n.snapshot_weightings.generators.sum() / 8760
+    print("\nSupply caps [TWh/a]: constraint, network cap, PatEx")
+    for name, g in caps.iterrows():
+        fuel = g.carrier_attribute
+        column = fuel if g.type == "import_limit" else f"{fuel} production"
+        print(f"  {name:28s} {g.constant / 1e6 / nyears:10.2f} {supply.get(column, float('nan')):10.2f}")
+
 # CO2 intensity of the links burning each fuel
 co2 = pd.read_csv(inputs / f"patex_co2_intensity_{args.horizon}.csv", index_col=0)["CO2 intensity"]
 fuel_links = {
