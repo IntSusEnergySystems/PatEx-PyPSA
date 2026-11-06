@@ -12,10 +12,9 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T5 Push** (needs the user's written consent in the chat): `develop` of both repos
   pushed on 2026-11-06 (before T18/T19); later commits are local
   (`git log origin/develop..develop`). SSH key `id_ed25519` authenticates.
-- [ ] **T36 nic6 run BE-LU-NL, CO2 cap 50 % of 1990, 24h, with the import limits (T29)**:
-  overlay `config/patex/co2-cap-50-24h.yaml`; bundle the fork / PATEX_PyPSA commits since the
-  cluster's (fork `8c38b995`, PATEX_PyPSA `1aa8cf4`) and the re-exported `levers2` bundle;
-  ledger (cooking, DH loss rate, supply caps), report (pypsa2html `can-climact`), publish.
+- [ ] **T37 Rerun BE-LU-NL with the nuclear fleet (T34)**: the CO2-cap run of 2026-11-07
+  (T36, done) predates T34, so it still has PyPSA-Eur's Belgian nuclear generators
+  (4.1 GW, every horizon); with T34 BE and NL have none from 2030.
 ### System constraints from PyPSA-Wal (decided 2026-11-05; general, every country)
 
 Ported in this order, each as an option behind `patex.enable` with its data retrieved
@@ -106,6 +105,12 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
 
 ## Done
 
+- 2026-11-07 T36 nic6 run BE-LU-NL, CO2 cap 50 % of 1990 every horizon, 24h, import limits
+  (fork `5c036b15`): all horizons optimal, ledger 1.0000, supply caps hold, CO2 at the cap
+  (sector table matches after the port-0 fix of `co2_by_sector.py`); report published at
+  caneurope `pypsa_results/patex-levers2-be-lu-nl-co2-cap-50-24h/` (pypsa2html: oil
+  surplus of a node exported, H2 / NH3 / methanol imports, thermal storage losses; every
+  Sankey node balances); PatEx report republished.
 - 2026-11-07 T34 Nuclear (fork option `nuclear_fleet`, standalone): one link per reactor
   from `data/nuclear_fleet.csv` (official sources, 109 operating + 3 under construction),
   duplicate generators removed, uranium supply added (upstream links could not run), one

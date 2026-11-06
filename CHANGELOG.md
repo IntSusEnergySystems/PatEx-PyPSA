@@ -89,6 +89,12 @@ Not modified. Used as is (`patex run`, dataset `47.x.4` on S3).
 
 ## PATEX_PyPSA
 
+### 2026-11-07 — CO2-cap run (T36) and its post-processing
+
+- `co2_by_sector.py`: CO2 taken up on port 0 (carbon-neutral imports), imports as fuel
+  supply; the sector total equals the CO2 in the atmosphere (= the cap).
+- `CLUSTER_NIC6.md`: job sizes measured for a 24h run.
+
 ### 2026-11-07 — T29 supply caps in the bundle
 
 - Export `patex_supply_{h}.csv`: gross imports per fuel (supply Sankey `source = import`,
