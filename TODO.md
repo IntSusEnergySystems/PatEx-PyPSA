@@ -10,9 +10,6 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 
 - [ ] **T5 Push** (needs the user's written consent in the chat): `develop` of both repos
   pushed on 2026-11-06; later commits are local (`git log origin/develop..develop`).
-- [ ] **T37 Rerun BE-LU-NL (CO2 cap 50 %, 24h) with the nuclear fleet (T34)**: the T36 run
-  predates T34 (it keeps PyPSA-Eur's 4.1 GW of Belgian nuclear generators). nic6 has fork
-  `5c036b15`, PATEX_PyPSA `3ab1d7b`: send bundles first.
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE). Option: PHEVs × 15/50 for the
@@ -70,6 +67,9 @@ Each as an option with its data retrieved online (rule + source + date in the fo
 
 One line per item; details in [CHANGELOG.md](CHANGELOG.md) and the commits.
 
+- 2026-11-07 T37 T36 rerun with the nuclear fleet on nic6 (whole pipeline, 43 steps, no
+  error after the empty-fleet fix): optimal at every horizon, ledger 1.0000, CO2 = cap,
+  report republished at the same address.
 - 2026-11-07 T36 BE-LU-NL on nic6, CO2 cap 50 % of 1990, 24h, import limits: optimal at
   every horizon, ledger 1.0000, report at caneurope
   `pypsa_results/patex-levers2-be-lu-nl-co2-cap-50-24h/` (every Sankey node balances).

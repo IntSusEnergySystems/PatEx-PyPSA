@@ -7,6 +7,8 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-07 `nuclear_fleet`: a horizon without any usable reactor no longer fails
+  (BE-LU-NL 2040, found by the T37 run); test.
 - 2026-11-07 `data/nuclear_fleet.csv` from IAEA PRIS (status, net MW, grid year per unit;
   `scripts/update_nuclear_fleet_from_pris.py`, raw `data/nuclear_pris.csv`).
 - 2026-11-07 `nuclear_fleet.min_remaining_years` 5 → 4 (user): BE's Doel 4 / Tihange 3
