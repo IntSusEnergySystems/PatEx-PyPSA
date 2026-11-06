@@ -64,6 +64,8 @@ SECTORS = [
     ("biomass to liquid", "fuel supply"),
     ("electrobiofuels", "fuel supply"),
     ("biomass-to-methanol", "fuel supply"),
+    ("import", "fuel supply"),
+    ("solid biomass import", "fuel supply"),
     ("DAC", "removals"),
 ]
 
@@ -96,8 +98,15 @@ def link_country(n: pypsa.Network) -> pd.Series:
 
 
 def link_atmosphere(n: pypsa.Network) -> pd.Series:
-    """Link → annual CO2 to the atmosphere [t/a] (sum over its ports on the atmosphere)."""
+    """Link → annual CO2 to the atmosphere [t/a] (sum over its ports on the atmosphere).
+
+    Port 0 counts too: carbon-neutral imports (``import gas / oil / methanol / biogas /
+    bioliquids``) take their CO2 from the atmosphere on bus0.
+    """
     out = pd.Series(0.0, index=n.links.index)
+    on_atm = n.links.index[n.links.bus0 == ATMOSPHERE]
+    if len(on_atm):
+        out[on_atm] -= annual(n, n.links_t.p0.reindex(columns=on_atm, fill_value=0.0))
     for k in range(1, 10):
         if f"bus{k}" not in n.links or f"p{k}" not in n.links_t:
             continue
