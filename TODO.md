@@ -15,8 +15,7 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 - [ ] **T36 Next nic6 run**: bundle the fork and PATEX_PyPSA commits since the cluster's
   (fork `8c38b995`, PATEX_PyPSA `1aa8cf4`) and the re-exported `levers2` bundle (T18/T19
   columns); rerun BE-LU-NL without cap, check the ledger (cooking, DH loss rate) and
-  republish. pypsa2html: map the new carriers (`gas / oil / coal / solid biomass / H2 for
-  cooking`, `urban central heat losses`) on the local `can-climact` branch, with the user's go.
+  republish (pypsa2html `can-climact` already maps the T18/T19 carriers, `4450250`).
 ### System constraints from PyPSA-Wal (decided 2026-11-05; general, every country)
 
 Ported in this order, each as an option behind `patex.enable` with its data retrieved
