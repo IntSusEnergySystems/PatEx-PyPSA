@@ -42,8 +42,7 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
 - [ ] (undecided) **T33 Build-rate limits** for renewables per country (IRENA additions ×
   factor, PyPSA-Wal `res_growth_allowance`).
 - [x] **T34 Nuclear**: done 2026-11-07 (fork option `nuclear_fleet`, see Done). Left: new
-  build (none; CAN to confirm, Q16); check `data/nuclear_fleet.csv` against IAEA PRIS (not
-  readable online by the agent); Belgium's legal end date after the 2025 repeal (2035 kept);
+  build (none; CAN to confirm, Q16); Belgium's legal end date after the 2025 repeal (2035 kept);
   Sizewell C once first nuclear concrete is poured; long-term-operation investment cost.
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
