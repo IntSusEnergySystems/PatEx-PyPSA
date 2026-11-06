@@ -7,6 +7,11 @@ PatEx). One entry per merge into `master`. Details: `git log`.
 
 Fork: `IntSusEnergySystems/PyPSA-Eur-CANEU`, cloned to `../../PyPSA-Eur-CANEU`.
 
+- 2026-11-07 T34 `nuclear_fleet` (new top-level config section, standalone, default off;
+  `scripts/_nuclear_fleet.py`, applied in `compose_network` after the brownfield step):
+  per-reactor links from `data/nuclear_fleet.csv`, duplicate generators removed, uranium
+  supply, lifetime extension and must-run; `test/test_nuclear_fleet.py`; `docs/energy.md`.
+  `config.patex.yaml`: on, 50 years default, margin 0.10. Colours for oil / coal production.
 - 2026-11-07 T29 `import_limits` (new top-level config section, standalone, default off;
   `scripts/_import_limits_config.py`): caps on gross imports per fuel for the whole region
   and on domestic gas / oil / coal (`GlobalConstraint` types `import_limit` /

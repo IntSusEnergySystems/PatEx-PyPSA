@@ -57,8 +57,8 @@ the sector doc and deleting it here.
 ## For CAN
 
 - **Q16 Scenario settings (T11, T28–T34).** CO2 target (EU or national, or PatEx's own
-  emission trajectory per country), nuclear (closure dates per country, lifetime extensions
-  such as Doel 4 / Tihange 3 to 2035 and Borssele, no new build?), CCS (fossil CCS allowed?),
+  emission trajectory per country), nuclear (rules set by the user on 2026-11-07, T34: one
+  10-year extension, 50 years default; new build allowed anywhere?), CCS (fossil CCS allowed?),
   import limits (electricity and per fuel), cross-border capacities (TYNDP?). The relative
   cap's 1990 baseline is the CO2-only inventory; the model counts physical carbon (no CRF
   calibration, see the fork's `docs/energy.md`), so the scope differs on refining of

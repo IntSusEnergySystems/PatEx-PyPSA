@@ -42,16 +42,10 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
   deployment ramp per country. Data: CO2StoP / national CCS strategies.
 - [ ] (undecided) **T33 Build-rate limits** for renewables per country (IRENA additions ×
   factor, PyPSA-Wal `res_growth_allowance`).
-- [ ] **T34 Nuclear** (PyPSA-Wal: `conventional.inflexible_nuclear`, `nuclear_helper.py`,
-  `extendable_nuclear_links`, commits `506106f5`, `bbc9450e`), general for every country:
-  - existing fleet and closure dates per country from national policy (PyPSA-Eur's
-    lifetimes: BE already 0 in 2030 although Doel 4 / Tihange 3 run to 2035; NL Borssele
-    gone by 2040 although an extension is planned); lifetime extension allowed once;
-    data: a maintained dataset or national decisions, with source and date;
-  - must-run: `p_min_pu = p_max_pu − 0.10` (option; today fully flexible from 0 to 100 %
-    each hour, which underestimates the flexibility needs);
-  - new build only where / when allowed per node and horizon (none in PAC 2.0: confirm
-    with CAN), nuclear as Links only (no Generator duplicate), no 10 MW threshold drop.
+- [x] **T34 Nuclear**: done 2026-11-07 (fork option `nuclear_fleet`, see Done). Left: new
+  build (none; CAN to confirm, Q16); check `data/nuclear_fleet.csv` against IAEA PRIS (not
+  readable online by the agent); Belgium's legal end date after the 2025 repeal (2035 kept);
+  Sizewell C once first nuclear concrete is poured; long-term-operation investment cost.
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE).
@@ -112,6 +106,12 @@ PyPSA-Wal (`../../TIMES2PYPSA/pypsa-wal`, Belgian data) is the reference for the
 
 ## Done
 
+- 2026-11-07 T34 Nuclear (fork option `nuclear_fleet`, standalone): one link per reactor
+  from `data/nuclear_fleet.csv` (official sources, 109 operating + 3 under construction),
+  duplicate generators removed, uranium supply added (upstream links could not run), one
+  10-year extension (model's choice at fixed O&M; none if the end date is already an
+  extension), not used within 5 years of its end, default lifetime 50 years, must-run 0.10.
+  BE and NL have no usable nuclear from 2030 (end dates 2035 / 2033 final). Tests.
 - 2026-11-07 T29 Import limits (fork option `import_limits`, standalone; PatEx hook
   `patex.import_limits`, bundle `patex_supply_{h}.csv`): caps on gross imports per fuel
   summed over the modelled countries (gas, oil, coal, H2, NH3, synthetic gas / oil,
