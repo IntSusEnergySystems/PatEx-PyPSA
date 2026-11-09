@@ -9,8 +9,8 @@ at the end of every task: tick, add, or move items to "Done" with the commit.
 > Session handover (state, decisions waiting): `../private_notes/NEXT_SESSION.md` (outside git).
 
 - [ ] **T5 Push** (needs the user's written consent in the chat): `develop` of both repos
-  pushed on 2026-11-07 (after the T37 check); later commits are local
-  (`git log origin/develop..develop`). `master` not merged (held by the user).
+  pushed on 2026-11-07, `master` merged (fast-forward) and pushed on 2026-11-09; later
+  commits are local (`git log origin/develop..develop`).
 - [ ] **T16 EV battery of PHEVs**: the EV fleet counts BEV + PHEV cars and vans with
   PyPSA-Eur's car battery (`bev_energy` 50 kWh). PHEVs have ~15 kWh: smart charging and
   V2G may be overestimated where PHEVs dominate (e.g. BE). Option: PHEVs × 15/50 for the
