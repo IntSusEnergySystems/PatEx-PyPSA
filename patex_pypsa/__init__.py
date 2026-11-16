@@ -5,6 +5,7 @@ __version__ = "0.1.0"
 from .allocate import override_country_totals  # noqa: E402
 from .export import default_mappings_dir, export_coupling_dir  # noqa: E402
 from .extraction import coverage, extract, load_rules  # noqa: E402
+from .heat import patex_heating_efficiencies  # noqa: E402
 from .io import load_patex_tables, split_stacked  # noqa: E402
 from .transport import land_transport_scale  # noqa: E402
 
@@ -17,5 +18,6 @@ __all__ = [
     "load_patex_tables",
     "load_rules",
     "override_country_totals",
+    "patex_heating_efficiencies",
     "split_stacked",
 ]

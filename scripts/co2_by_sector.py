@@ -39,7 +39,7 @@ SECTORS = [
     ("naphtha for industry", "industry"),
     ("gas feedstock for industry", "industry"),
     ("HVC to air", "plastics end of life"),
-    ("waste CHP", "plastics end of life"),
+    ("waste CHP", "waste to energy"),  # PatEx non-renewable waste (audit #2)
     ("rural", "buildings"),
     ("urban decentral", "buildings"),
     ("gas for cooking", "buildings"),

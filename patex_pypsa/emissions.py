@@ -21,6 +21,8 @@ FACTOR_SOURCES = [
     ("tra", "tra", "tra-combustion-emission-factor", 1.0),  # Mt/TWh
     ("agr", "agr", "agr-combustion-emission-factor", 1.0),  # Mt/TWh
     ("bld", "bld", "bld-emission-factor", 1e-3),  # g/kWh
+    # power and heat plants, by primary-energy-carrier (waste-to-energy, audit #2)
+    ("elc", "elc", "elc-emission-factor", 1e-3),  # g/kWh
 ]
 
 #: PyPSA-Eur carrier → PatEx fossil carriers it stands for
@@ -64,7 +66,9 @@ def load_co2_factors(dataset: str, countries: list[str]) -> pd.DataFrame:
     for sector, module, name, unit in FACTOR_SOURCES:
         df = ds.load(module, name, RCP)
         value = next(c for c in df.columns if c.startswith(name + "["))
-        co2 = df[df["gaes"] == "CO2"]
+        co2 = df[df["gaes"] == "CO2"].rename(
+            columns={"primary-energy-carrier": "energy-carrier"}
+        )
         f = co2.groupby(["Country", "energy-carrier"])[value].mean().mul(unit)
         parts.append(f.rename(FACTOR).reset_index().assign(sector=sector))
     return pd.concat(parts, ignore_index=True)[["Country", "sector", "energy-carrier", FACTOR]]
@@ -102,7 +106,8 @@ def co2_intensity(energy: pd.DataFrame, factors: pd.DataFrame, horizon: int) -> 
         if total > 0:
             out[carrier] = (sel["TWh"] * sel[FACTOR]).sum() / total
         else:  # no use of this fuel left: plain mean of the factors
-            out[carrier] = factors.loc[factors["energy-carrier"].isin(fuels), FACTOR].mean()
+            final = factors["sector"].isin(ENERGY_VARIABLES)  # final-energy sectors only
+            out[carrier] = factors.loc[final & factors["energy-carrier"].isin(fuels), FACTOR].mean()
     return pd.Series(out, name="CO2 intensity").rename_axis("carrier")
 
 
@@ -110,6 +115,69 @@ def industry_factor(factors: pd.DataFrame, carrier: str) -> pd.Series:
     """Country → PatEx industry CO2 factor of ``carrier`` [tCO2/MWh = MtCO2/TWh]."""
     f = factors[(factors["sector"] == "ind") & (factors["energy-carrier"] == carrier)]
     return f.set_index("Country")[FACTOR]
+
+
+#: PatEx sankey (transformation input of solid waste to electricity / heat) and the
+#: production by primary carrier that splits it into non-renewable and renewable waste
+SANKEY = "elc_energy-sankey-detailed[TWh]"
+NET_BY_FUEL = "elc_net-energy-production-by-carrier-primary-carrier-way-of-prod[TWh]"
+GROSS_BY_FUEL = "elc_gross-energy-production-by-carrier-way-of-prod[TWh]"
+WASTE_NONRES, WASTE_RES = "solid-waste-nonres", "solid-waste-res"
+
+
+def waste_to_energy(
+    tables: dict[str, pd.DataFrame], factors: pd.DataFrame, horizon: int
+) -> pd.DataFrame:
+    """Non-renewable waste burned in PatEx's power and heat plants, per country:
+    ``fuel`` [TWh] and ``co2`` [MtCO2] (audit #2, ``patex.waste_to_energy``).
+
+    PatEx books the solid waste input of power and heat plants in its sankey
+    (``transformation-input`` → electricity / heat) without the renewable split. The
+    plants burn one mix, so the non-renewable share of the fuel is its share of the
+    production from waste: net electricity (CHP and waste plants) for the electricity
+    input, gross heat for the heat input (one carrier without waste production: the
+    other's split). CO2 = fuel × PatEx's power-sector factor of
+    non-renewable waste (physical, before PatEx's inventory calibration, as for every
+    other fuel, T27). Renewable waste emits nothing (factor 0 in PatEx).
+    """
+    sk = tables[SANKEY]
+    sk = sk[
+        (sk["Years"] == horizon)
+        & (sk["source"] == "transformation-input")
+        & (sk["label"] == "solid-waste")
+        & sk["target"].isin(["electricity", "heat"])
+    ]
+    fuel_in = sk.groupby(["Country", "target"])[SANKEY].sum().unstack(fill_value=0.0)
+    fuel_in = fuel_in.reindex(columns=["electricity", "heat"], fill_value=0.0)
+
+    def nonres_share(variable: str, carrier: str) -> pd.Series:
+        t = tables[variable]
+        t = t[
+            (t["Years"] == horizon)
+            & (t["energy-carrier"] == carrier)
+            & t["primary-energy-carrier"].isin([WASTE_NONRES, WASTE_RES])
+        ]
+        p = t.groupby(["Country", "primary-energy-carrier"])[variable].sum().unstack(fill_value=0.0)
+        p = p.reindex(columns=[WASTE_NONRES, WASTE_RES], fill_value=0.0)
+        return p[WASTE_NONRES] / p.sum(axis=1).where(lambda x: x > 0)
+
+    shares = pd.DataFrame(
+        {
+            "electricity": nonres_share(NET_BY_FUEL, "electricity"),
+            "heat": nonres_share(GROSS_BY_FUEL, "heat"),
+        }
+    ).reindex(fuel_in.index)
+    # a carrier without waste production (ES heat): the other carrier's split
+    shares = shares.fillna({"electricity": shares["heat"], "heat": shares["electricity"]})
+    orphan = (fuel_in > 1e-6) & shares.isna()
+    if orphan.any().any():
+        raise ValueError(f"PatEx waste fuel without waste production:\n{fuel_in[orphan.any(axis=1)]}")
+    fuel = (fuel_in * shares.fillna(0.0)).sum(axis=1)
+    f = factors[(factors["sector"] == "elc") & (factors["energy-carrier"] == WASTE_NONRES)]
+    f = f.set_index("Country")[FACTOR].reindex(fuel.index)
+    if f[fuel > 0].isna().any():
+        raise ValueError(f"no PatEx power CO2 factor of {WASTE_NONRES} for {list(f.index[f.isna() & (fuel > 0)])}")
+    return pd.DataFrame({"fuel": fuel, "co2": fuel * f.fillna(0.0)})
 
 
 REFINERY_EMISSIONS = "clm_emissions-by-em-or-capt-module-sector[MtCO2e]"

@@ -150,7 +150,8 @@ def test_horizon_tables_turn_waste_into_co2_and_district_heat_into_share():
             ("parameters", "district heat delivered", "BE", 2030, "TWh", 10.0),
             ("parameters", "district heat losses", "LU", 2030, "TWh", 0.0),
             ("parameters", "district heat delivered", "LU", 2030, "TWh", 0.0),
-            ("parameters", "number evs", "BE", 2030, "number", 1e6),
+            ("parameters", "number bev", "BE", 2030, "number", 1e6),
+            ("parameters", "number phev", "BE", 2030, "number", 2e5),
         ]
         + [("energy_totals", c, ct, 2030, "TWh", 5.0) for c in HEAT_COLUMNS for ct in ("BE", "LU")]
     )
@@ -209,8 +210,8 @@ def test_canonical_rules_on_synthetic_run(tmp_path):
         [
             (ct, sector, carrier, 0.3)
             for ct in load_patex_tables(SYNTHETIC_RUN)["bld_energy-demand[TWh]"]["Country"].unique()
-            for sector in ("ind", "tra", "agr", "bld")
-            for carrier in ["solid-waste", "gaseous-ff-natural", "solid-ff-coal", "liquid-ff-oil",
+            for sector in ("ind", "tra", "agr", "bld", "elc")
+            for carrier in ["solid-waste", "solid-waste-nonres", "gaseous-ff-natural", "solid-ff-coal", "liquid-ff-oil",
                             "liquid-ff-diesel", "liquid-ff-gasoline", "liquid-ff-kerosene",
                             "liquid-ff-marinefueloil"]
         ],
@@ -228,6 +229,10 @@ def test_canonical_rules_on_synthetic_run(tmp_path):
     assert (supply[["methanol", "NH3"]] == 0).all().all()  # PatEx imports neither
     par = pd.read_csv(out / "patex_parameters_2030.csv", index_col=0)
     assert par["district heating loss"].between(0, 1).all()
+    assert "co2 stored" in par  # PatEx CCS, sign turned positive (T32)
+    # non-renewable waste in power and heat plants (audit #2), CO2 at the elc factor
+    assert (par["waste to energy fuel"] >= 0).all()
+    assert par["waste to energy co2"].values == pytest.approx(0.3 * par["waste to energy fuel"].values)
     ind = pd.read_csv(out / "patex_industry_2030.csv", index_col=0)
     assert {"process emission", "methane feedstock", "oil for industry"} <= set(ind.columns)
     ci = pd.read_csv(out / "patex_co2_intensity_2030.csv", index_col=0)["CO2 intensity"]
@@ -326,8 +331,8 @@ def test_report_pages_from_synthetic_bundle(tmp_path):
     from patex_pypsa.pages import write_report
 
     factors = pd.DataFrame(
-        [("XX", s, c, 0.3) for s in ("ind", "tra", "agr", "bld")
-         for c in ["solid-waste", "gaseous-ff-natural", "solid-ff-coal", "liquid-ff-oil",
+        [("XX", s, c, 0.3) for s in ("ind", "tra", "agr", "bld", "elc")
+         for c in ["solid-waste", "solid-waste-nonres", "gaseous-ff-natural", "solid-ff-coal", "liquid-ff-oil",
                    "liquid-ff-diesel", "liquid-ff-gasoline", "liquid-ff-kerosene",
                    "liquid-ff-marinefueloil"]],
         columns=["Country", "sector", "energy-carrier", "tCO2/MWh"],
@@ -337,3 +342,19 @@ def test_report_pages_from_synthetic_bundle(tmp_path):
     assert (out / "sankey_2030.html").exists() and (out / "indicators_catalogue.html").exists()
     assert "PX_DATA" in (out / "indicators_energy.html").read_text()
 
+
+
+def test_negative_co2_stored_is_set_to_zero_not_an_error():
+    from patex_pypsa.export import check_values, clip_at_zero
+
+    long = long_rows(
+        [
+            ("parameters", "co2 stored", "BE", 2030, "MtCO2e", -0.2),
+            ("parameters", "co2 stored", "NL", 2030, "MtCO2e", 1.5),
+            ("energy_totals", "total road", "BE", 2030, "TWh", -1.0),
+        ]
+    )
+    out = clip_at_zero(long)
+    assert out["value"].tolist() == [0.0, 1.5, -1.0]  # only co2 stored is clipped
+    with pytest.raises(ValueError, match="negative"):
+        check_values(out)

@@ -2,13 +2,15 @@ patex_variable,filters,carrier,sector,pypsa,note
 bld_energy-demand[TWh],building-type=residential; end-use=heating|hotwater; energy-carrier!=ambiant,,Residential heating & hot water,Building heat,"Electric heating included: PyPSA-Eur serves it from its heat buses."
 bld_energy-demand[TWh],building-type=residential; end-use=heating|hotwater; energy-carrier=ambiant,,Residential heating & hot water,Ambient heat (heat-pump COP),"Not final energy: PyPSA-Eur models it through the COP."
 bld_district-energy-demand[TWh],building-type=residential,heat,Residential heating & hot water,Building heat,
-bld_energy-demand[TWh],building-type=residential; end-use!=heating|hotwater; energy-carrier=electricity,,Residential other uses,Electricity base load,"Appliances, lighting, cooling, electric cooking."
+bld_energy-demand[TWh],building-type=residential; end-use!=heating|hotwater|cooling; energy-carrier=electricity,,Residential other uses,Electricity base load,"Appliances, lighting, electric cooking."
+bld_energy-demand[TWh],building-type=residential; end-use=cooling; energy-carrier=electricity,,Residential other uses,Electricity cooling,"Own load, Hotmaps residential / tertiary cooling profiles (audit #5b)."
 bld_energy-demand[TWh],building-type=residential; end-use=cooking; energy-carrier!=electricity,,Residential other uses,Building cooking (non-electric),"Flat loads on the gas, oil, solid biomass, coal and H2 buses (T18)."
 bld_energy-demand[TWh],building-type=residential; end-use!=heating|hotwater|cooking; energy-carrier!=electricity,,Residential other uses,Not modelled in PyPSA-Eur,"Non-electric appliances / cooling / others: none in PatEx."
 bld_energy-demand[TWh],building-type=non-residential; end-use=heating|hotwater; energy-carrier!=ambiant,,Services heating & hot water,Building heat,
 bld_energy-demand[TWh],building-type=non-residential; end-use=heating|hotwater; energy-carrier=ambiant,,Services heating & hot water,Ambient heat (heat-pump COP),
 bld_district-energy-demand[TWh],building-type=non-residential,heat,Services heating & hot water,Building heat,
-bld_energy-demand[TWh],building-type=non-residential; end-use!=heating|hotwater; energy-carrier=electricity,,Services other uses,Electricity base load,
+bld_energy-demand[TWh],building-type=non-residential; end-use!=heating|hotwater|cooling; energy-carrier=electricity,,Services other uses,Electricity base load,
+bld_energy-demand[TWh],building-type=non-residential; end-use=cooling; energy-carrier=electricity,,Services other uses,Electricity cooling,
 bld_energy-demand[TWh],building-type=non-residential; end-use=cooking; energy-carrier!=electricity,,Services other uses,Building cooking (non-electric),"Flat loads on the gas, oil, solid biomass, coal and H2 buses (T18)."
 bld_energy-demand[TWh],building-type=non-residential; end-use!=heating|hotwater|cooking; energy-carrier!=electricity,,Services other uses,Not modelled in PyPSA-Eur,"Non-electric appliances / cooling / others: none in PatEx."
 tra_energy-demand-domestic-by-carrier-user-vehicule[TWh],vehicule-type=2W|LDV|HDV|bus; energy-carrier=electricity,,Road,Land transport EV,

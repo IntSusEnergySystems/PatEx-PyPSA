@@ -9,7 +9,7 @@ PatEx gives the final energy per fuel directly, so the loads are set to it: each
 load keeps PyPSA-Eur's hourly profile (``distance(t) / efficiency(t)``, i.e. traffic
 and temperature) and is scaled to PatEx's energy. No distance and no vehicle
 efficiency enter the totals. The EV fleet, which sizes chargers, smart charging and
-V2G, comes from PatEx as well (``number evs``).
+V2G, comes from PatEx as well (``number bev``, ``number phev``).
 """
 
 from __future__ import annotations

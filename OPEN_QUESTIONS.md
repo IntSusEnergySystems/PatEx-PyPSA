@@ -11,10 +11,16 @@ the sector doc and deleting it here.
 
 ## For Climact
 
-- **Q1 Heat accounting boundary.** PyPSA-Eur heat columns are *final* energy, converted
-  to useful heat with its `heating_efficiencies.csv` (today's carrier mix per country).
-  The rules take `incl-district-heating − ambient`. Is that PatEx's final-energy boundary?
-  Should PatEx's own heating efficiencies be used, since its carrier mix changes over time?
+- **Q22 Heat-pump COP and ambient heat (2026-11-16, audit #4; Julien asks Climact).**
+  (a) With levers 2, the `elec-hp` efficiency rows of `bld energy-efficiency` bring the
+  heat-pump COP (useful / electricity) *down* over time in every country checked
+  (figures in `FINDINGS.md`), with the ambient row rising to keep 1/eff_el + 1/eff_amb = 1. Is that
+  intended (lever level 2 trajectory, or a data issue)? It sets PatEx's electricity
+  for heating; PyPSA-Eur uses its own COPs and is not affected. (b) After calibration,
+  the ambient heat of residential space heating implies more heat-pump electricity
+  than PatEx reports for heating in some countries (DE, DK, NL): electricity and
+  ambient heat are calibrated separately. Which one is right? The link counts all that
+  electricity as heat pump and its output as electricity + ambient heat.
 - **Q3 Naphtha (T8).** Is `naphtha` = all industry liquids incl. feedstock the right
   reading? PyPSA-Eur emits all naphtha carbon, as process share or at end of life.
 - **Q5 Aviation and navigation boundaries (T9).** PatEx has no domestic aviation for BE
@@ -35,20 +41,38 @@ the sector doc and deleting it here.
   Nordic and Baltic countries between 2021 and 2050. Intended?
 - **Q12 Chlor-alkali hydrogen (T22).** PatEx has no chlorine material and no by-product
   hydrogen (about 3 % of EU hydrogen today, see `docs/industry.md`). Represent it or not?
-- **Q13 Plastics end of life (T23).** The link follows PatEx (CO2 only where waste is
-  burned, `patex.plastics_eol_co2: false`). Confirm this convention for PAC 2.0.
+- **Q13 Plastics end of life (T23).** Settled for the link (audit #2, 2026-11-16): inventory
+  convention, PatEx's non-renewable waste-to-energy burned in waste CHPs, the rest of the
+  naphtha carbon kept in products, CRF 5.C out of model and baseline. Open for CAN /
+  Climact: (a) PAC 2.0 target scope for waste incineration without energy recovery;
+  (b) bio / synthetic carbon in products counts as removed in PyPSA's oil pool, PatEx
+  gives olefin feedstock no credit (factor 0, other industries 0.75): keep, or book
+  products as fossil first?
 - **Q14 Methanol and ammonia ships (T15).** PatEx shipping (IWW and bunkers-marine) runs on
   marine fuel oil (fossil, bio, synthetic), electricity and hydrogen only. Methanol and
   ammonia are expected to take a large share of shipping fuel by 2040–2050 (PyPSA-Eur's
   default: methanol 55 % in 2040, 80 % in 2045). Will PatEx add them? The link takes the
   fuel split from PatEx, so without them PyPSA-Eur has no methanol ships in PatEx
   countries; ammonia ships would need a new load in PyPSA-Eur.
+- **Q20 Methanol final demand (2026-11-12; Julien asks Climact).** PatEx has no methanol
+  demand: chemical methanol sits in "chemical-other" (no production figure), e-methanol
+  is only a supply route of synthetic liquids, e-MTO is 0 in levers2. Request: a methanol
+  final demand (chemicals, and as a fuel, e.g. shipping, see Q14), so that PyPSA-Eur
+  optimises its route as for ammonia. Until then nothing changes for methanol.
+- **Q21 Ammonia process CO2 and urea (2026-11-12).** PatEx's ammonia process CO2 per MWh
+  of feedstock gas is above the carbon natural gas contains, and urea application CO2 is
+  also booked in agriculture (3H): is the ammonia factor gross (urea carbon counted
+  twice) or does it include something else? No effect on the model since the ammonia
+  route is optimised (PyPSA-Eur computes the reforming CO2), but it matters for PatEx's
+  own totals.
 - **Q15 PAC 2.0 lever file (T6)** → `runs/pac2/patex/levers.json` (runs use levers = 2).
 - **Q17 Fossil imports and domestic production (T29).** For gas and coal, PatEx imports
   `demand × energy-net-import-refineries[%]` and books the rest as primary production,
   also where a country has no resource (coal in Belgium). What do the lever's values
   stand for, and will PAC 2.0 set them per country? Until then the soft-link adds the
   production above today's (Eurostat) to the import cap.
+- **Q19 PHEV fleet (T16).** In some countries PatEx's plug-in fleet is mostly PHEVs, with
+  battery-electric cars falling to 2050 (figures in FINDINGS). Intended?
 - **Q18 Bioenergy imports (T29).** Gross imports by origin (`agr_bio-energy-production-by-
   energy-carrier-origin`): some countries import far more biogas than their gas use
   (figures in FINDINGS). Expected? Only one country imports electricity: is electricity

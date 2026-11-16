@@ -28,6 +28,14 @@ COUNTRY_NAMES = {
 }
 
 
+#: EU Member States: the "EU" group of the report (the PatEx region of the import caps;
+#: the modelled non-EU countries, GB, NO, CH..., stay outside it)
+EU27 = {
+    "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU",
+    "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",
+}
+
+
 def country_groups(network_file):
     n = pypsa.Network(network_file)
     # Electricity buses carry the node locations pypsa2html detects.
@@ -68,7 +76,13 @@ def main():
             "groups": [
                 {"code": c, "label": COUNTRY_NAMES.get(c, c), "members": groups[c]}
                 for c in countries
-            ],
+            ]
+            + (
+                [{"code": "EU", "label": "EU countries",
+                  "members": sorted(m for c in eu for m in groups[c])}]
+                if (eu := [c for c in countries if c in EU27]) and len(eu) < len(countries)
+                else []
+            ),
         },
         "scenarios": [
             {

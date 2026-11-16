@@ -1,7 +1,7 @@
 """``patex-pypsa`` command line.
 
     patex-pypsa export-coupling --pkl run.pkl --coupling-dir runs/pac2 --horizons 2030,2040,2050 \
-        --dataset "s3://climact-dataset/patex/47.x.4?region=eu-central-1"
+        --dataset "s3://climact-dataset/patex/47.x.4?region=eu-central-1" --levers-default 2
     patex-pypsa inspect --pkl run.pkl [--grep energy-demand]
     patex-pypsa report --coupling-dir runs/pac2            # HTML Sankey + indicators
     patex-pypsa build-agriculture-shares --idees-dir ../../PyPSA-Eur-CANEU/data/jrc_idees/archive/2023-v1
@@ -38,6 +38,12 @@ def _parser() -> argparse.ArgumentParser:
         "--dataset",
         help="PatEx dataset of the run, for the CO2 factors (needs the PatEx environment)",
     )
+    e.add_argument(
+        "--levers-default",
+        type=float,
+        help="levers of the PatEx run (as `patex run`), for the heating efficiencies",
+    )
+    e.add_argument("--levers-file", type=Path, help="lever file of the PatEx run, if any")
     e.add_argument("--mappings-dir", type=Path, help="default: the repository data/")
     e.add_argument("--scenario-id", help="default: the pickle file name")
     e.add_argument("--strict", action="store_true", help="fail if some PatEx energy is unmapped")
@@ -76,6 +82,8 @@ def main(argv: list[str] | None = None) -> None:
             strict=args.strict,
             allow_negative=args.allow_negative,
             dataset=args.dataset,
+            levers_default=args.levers_default,
+            levers_file=args.levers_file,
         )
     elif args.command == "build-agriculture-shares":
         from .agriculture import shares_from_idees

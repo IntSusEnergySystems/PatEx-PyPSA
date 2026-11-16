@@ -28,6 +28,8 @@ PATEX2PYPSA/
 │   │   ├── allocate.py           # country totals → PyPSA nodes (used inside pypsa-eur)
 │   │   ├── transport.py          # road energy per fuel → scale of PyPSA-Eur's land-transport loads
 │   │   ├── emissions.py          # PatEx CO2 factors → PyPSA-Eur CO2 intensity per carrier
+│   │   ├── heat.py               # PatEx useful building heat and final-to-useful efficiencies
+│   │   ├── fallback.py           # countries without PatEx data on PatEx's EU trend
 │   │   ├── sankey.py             # every PatEx demand row → fuel / sector / PyPSA-Eur input
 │   │   ├── indicators.py         # PatEx output series (data/indicators.csv)
 │   │   ├── pages.py              # HTML report: Sankey + indicator pages
@@ -46,6 +48,10 @@ PATEX2PYPSA/
 │   ├── scripts/check_agriculture_split.py  # base-year check vs JRC-IDEES
 │   ├── scripts/check_network_ledger.py     # composed network loads vs bundle
 │   ├── scripts/co2_by_sector.py            # CO2 per country and sector, bio credits on consumers
+│   ├── scripts/interconnection_check.py    # cross-border capacities vs limits
+│   ├── scripts/pypsa2html_config.py        # pypsa2html config of a run (HTML report)
+│   ├── scripts/hotmaps_cooling_table.py    # Hotmaps cooling profiles → fork data table
+│   ├── scripts/cluster/                    # nic6 environment and Slurm job script
 │   └── tests/
 ├── private_notes/                # outside git: PatEx figures (FINDINGS.md), session handover
 └── runs/<scenario>/              # one coupling bundle per scenario (created by runs, outside git)
@@ -88,10 +94,11 @@ uv run patex-pypsa export-coupling --pkl ../PATEX2PYPSA/runs/pac2/patex/run.pkl 
 
 Or do all of it with `scripts/run_coupled.sh runs/pac2 [--snakemake]`.
 
-Countries without PatEx data (47.x.4: AL, BA, CH, GB, ME, MK, NO, RS, XK) keep
-PyPSA-Eur's own demands; they are listed in `patex.fallback_countries`. Any other
-modelled country missing from the bundle stops the workflow, so a failed PatEx country
-cannot fall back silently.
+Countries without PatEx data (47.x.4: AL, BA, CH, GB, ME, MK, NO, RS, XK) are listed in
+`patex.fallback_countries`: with `patex.fallback_demand: eu_trend` (used in the runs) their
+own base-year data follow PatEx's EU trend (`fallback.py`), otherwise they keep
+PyPSA-Eur's own demands. Any other modelled country missing from the bundle stops the
+workflow, so a failed PatEx country cannot fall back silently.
 
 ## Report: Sankey and PatEx indicators
 
@@ -120,9 +127,11 @@ Output in `<coupling_dir>/pypsa_inputs/`:
 
 | File | Content |
 |---|---|
-| `patex_energy_totals_{h}.csv` | country × PyPSA-Eur `energy_totals` columns (+ `electricity base load`), TWh/a |
+| `patex_energy_totals_{h}.csv` | country × PyPSA-Eur `energy_totals` columns + link columns (`electricity base load`, `electricity {residential,services} space cooling`, road / rail / aviation / navigation fuels, cooking per fuel), TWh/a |
 | `patex_industry_{h}.csv` | country × `industrial_energy_demand` columns, TWh/a (process emissions MtCO2e/a) |
-| `patex_parameters_{h}.csv` | country × `district heat share` [-], `number evs` |
+| `patex_parameters_{h}.csv` | country × `district heat share`, `district heating loss` [-], `number bev`, `number phev`, `total {sector} {use} efficiency` (useful / final heat), `co2 stored` [Mt/a], `waste to energy fuel` / `co2` |
+| `patex_supply_{h}.csv` | country × imports and domestic production per fuel (import caps), TWh/a |
+| `patex_heat_technologies.csv` | PatEx heating efficiencies and technology mix (useful heat) |
 | `patex_co2_intensity_{h}.csv` | `gas`, `oil`, `coal` → CO2 intensity [tCO2/MWh]; `oil refining` → refinery CO2 per MWh of oil products |
 | `patex_co2_factors.csv` | PatEx CO2 factors used (country, sector, fuel) |
 | `patex_demands_long.csv` | every year, long format, for QA and plots |
@@ -173,8 +182,10 @@ The list of changed files and the reasons is in [MODEL_CHANGES.md](MODEL_CHANGES
 
 ```bash
 cd ../../PyPSA-Eur-CANEU
-pixi run snakemake --configfile config/test/config.overnight.yaml config/test/config.patex.yaml -c4  # BE test
-# config/config.patex.yaml is the full run; it expects ../PATEX2PYPSA/runs/pac2 (T6, not built yet)
+# Snakemake workflows run on the nic6 cluster only (../../CLUSTER_NIC6.md), e.g. the BE test
+pixi run snakemake --configfile config/test/config.overnight.yaml config/test/config.patex.yaml -c4
+# full runs: config/config.patex.yaml + overlays in config/patex/ (fork docs/README.md);
+# they use ../PATEX2PYPSA/runs/levers2 until the PAC 2.0 lever file (runs/pac2, T6) exists
 
 # check a solved or composed network against the bundle (pixi python)
 python ../PATEX2PYPSA/PATEX_PyPSA/scripts/check_network_ledger.py \
